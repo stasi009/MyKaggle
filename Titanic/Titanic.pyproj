@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c37ccb2a-6d87-4fbe-a36e-4ba8830dce43</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Titanic.py</StartupFile>
+    <StartupFile>titanic.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,7 +22,11 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Titanic.py" />
+    <Compile Include="learn1.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="preprocess.py" />
+    <Compile Include="titanic.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
