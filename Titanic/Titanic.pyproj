@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="features.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="learn1.py">
       <SubType>Code</SubType>
     </Compile>
