@@ -19,6 +19,32 @@ ytrain = titanic["Survived"]
 scaler = skpreprocess.StandardScaler()
 Xtrain_scaled = scaler.fit_transform(Xtrain)
 
+# fit a LR classifier
+lr = sklinear.LogisticRegression()
+lr.fit(Xtrain_scaled,ytrain)
+train_accuracy = lr.score(Xtrain_scaled,ytrain)
+
+# predict
+titanic_test = pd.DataFrame.from_csv("test_processed.csv")
+Xtest = titanic_test[feature_names]
+Xtest_scaled = scaler.transform(Xtest)
+
+predictions = lr.predict(Xtest_scaled)
+submission = pd.DataFrame({
+        "PassengerId": titanic_test["PassengerId"],
+        "Survived": predictions
+    })
+
+submission.to_csv("submission.csv", index=False)
+
+
+
+
+
+
+
+
+
 # visualize in 2D plane by PCA
 pca = skdecompose.PCA(n_components=2)
 Xtrain_2d = pca.fit_transform(Xtrain_scaled)
@@ -43,9 +69,8 @@ for key,grp in survive_grps:
     color = "b" if key==1 else "r"
     plt.scatter(grp.pc1,grp.pc2,label=label,alpha=0.5,color=color)
 
-# fit a LR classifier
-lr = sklinear.LogisticRegression()
-lr.fit(Xtrain_scaled,ytrain)
-train_accuracy = lr.score(Xtrain_scaled,ytrain)
+
+
+
 
 
