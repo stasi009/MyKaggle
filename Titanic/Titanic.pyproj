@@ -40,6 +40,15 @@
     <Compile Include="learn3_rf.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="learn4_lr_gridsearch.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="learn5_boosttree.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="learn6_svm.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="preprocess.py" />
     <Compile Include="titanic.py" />
   </ItemGroup>

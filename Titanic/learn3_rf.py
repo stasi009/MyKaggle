@@ -1,4 +1,4 @@
-
+﻿
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,12 +7,13 @@ import sklearn.ensemble as skensemble
 
 titanic = pd.DataFrame.from_csv("train_processed.csv")
 
-feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","EmbarkC","EmbarkQ","EmbarkS"]
+feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale"]
+# feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","EmbarkC","EmbarkQ","EmbarkS"]
 Xtrain = titanic[feature_names]
 ytrain = titanic["Survived"]
 
 criterion = "entropy"
-rf = skensemble.RandomForestClassifier(n_estimators=100, criterion=criterion,oob_score=True)
+rf = skensemble.RandomForestClassifier(n_estimators=200, criterion=criterion,oob_score=True)
 rf.fit(Xtrain,ytrain)
 rf.oob_score_
 
@@ -27,4 +28,4 @@ submission = pd.DataFrame({
         "PassengerId": titanic_test["PassengerId"],
         "Survived": predictions
     })
-submission.to_csv("submission.csv", index=False)
+submission.to_csv("submit_rf_fewfeature.csv", index=False)
