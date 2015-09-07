@@ -70,6 +70,9 @@ for key,grp in survive_grps:
     plt.scatter(grp.pc1,grp.pc2,label=label,alpha=0.5,color=color)
 
 
+lrcv = sklinear.LogisticRegressionCV()
+
+
 
 
 

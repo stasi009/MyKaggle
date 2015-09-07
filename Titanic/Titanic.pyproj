@@ -22,10 +22,22 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="average.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="features.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="learn1.py">
+    <Compile Include="inspect_features.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="learn1_lr.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="learn2_lrcv.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="learn3_rf.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="preprocess.py" />
