@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="analyze_errors2.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="analyze_errors.py">
       <SubType>Code</SubType>
     </Compile>

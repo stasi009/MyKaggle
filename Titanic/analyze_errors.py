@@ -1,4 +1,4 @@
-
+﻿
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,6 +11,7 @@ from sklearn.svm import LinearSVC
 
 # --------------------------- load train data
 titanic_train = pd.DataFrame.from_csv("train_processed.csv")
+titanic_train = titanic_train.set_index("PassengerId")
 
 #feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","EmbarkC","EmbarkQ","EmbarkS"]
 feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale"]
@@ -70,6 +71,9 @@ rsltframe = pd.DataFrame(train_results)
 rsltframe = rsltframe.set_index("PassengerId")
 rsltframe.to_csv("train_results.csv",index_label="PassengerId")
 
+# --------------------------- read back from CSV
+rsltframe = pd.read_csv("train_results.csv",index_col="PassengerId")
+
 # --------------------------- check training error
 def train_score(col):
     temp = (col == rsltframe.Actual).astype(int)
@@ -78,6 +82,12 @@ train_scores = rsltframe.apply(train_score)
 
 # --------------------------- check training error
 lr_wrong_ids = rsltframe.index[ rsltframe.LR != rsltframe.Actual ]
+svc_wrong_ids = rsltframe.index[ rsltframe.SVC != rsltframe.Actual]
+gbdt_wrong_ids = rsltframe.index[rsltframe.GBDT != rsltframe.Actual]
 
+intersection = np.intersect1d(gbdt_wrong_ids,svc_wrong_ids,True)
+intersectoin = np.intersect1d(intersection,lr_wrong_ids,True)
 
-
+# --------------------------- retrieve common incorrect samples
+comm_wrong_samples = titanic_train.loc[intersection,:]
+comm_wrong_samples.to_csv("common_wrong.csv",index_label="PassengerId")
