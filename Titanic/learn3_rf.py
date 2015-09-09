@@ -3,7 +3,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
-import sklearn.ensemble as skensemble
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.grid_search import RandomizedSearchCV
+from scipy.stats import randint as sp_randint
+
 
 titanic = pd.DataFrame.from_csv("train_processed.csv")
 
@@ -12,10 +15,13 @@ feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale"]
 Xtrain = titanic[feature_names]
 ytrain = titanic["Survived"]
 
-criterion = "entropy"
-rf = skensemble.RandomForestClassifier(n_estimators=200, criterion=criterion,oob_score=True)
-rf.fit(Xtrain,ytrain)
-rf.oob_score_
+param_dist = {"n_estimators=200":  sp_randint(100,1500),                
+              "max_depth": [2,3, 4,None],              
+              "criterion": ["gini", "entropy"]}
+
+rf = RandomForestClassifier(oob_score=True)
+searchcv = RandomizedSearchCV(estimator=rf, param_distributions=param_dist,n_iter=200)
+searchcv.fit(Xtrain,ytrain)    
 
 sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feature_names),reverse=True)
 
