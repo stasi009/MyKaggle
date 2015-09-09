@@ -55,6 +55,9 @@
     <Compile Include="learn6_svm.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ticket_group.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="preprocess.py" />
     <Compile Include="titanic.py" />
   </ItemGroup>

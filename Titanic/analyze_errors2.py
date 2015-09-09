@@ -1,4 +1,4 @@
-
+﻿
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ comm_wrong_samples = pd.read_csv("common_wrong.csv",index_col="PassengerId")
 
 condition = (comm_wrong_samples.Sex == "male") & (comm_wrong_samples.Pclass == 3)
 wrong_male3 = comm_wrong_samples.loc[condition,:]
-wrong_male3[["Age","SibSp","Parch","Ticket","Fare","Embarked"]]
+wrong_male3[["Survived","Age","SibSp","Parch","Ticket","Fare","Embarked"]]
 
 # ******************************** #
 cond_male3dead = (titanic_train.Sex == "male" ) & (titanic_train.Pclass == 3) & (titanic_train.Survived==0)
