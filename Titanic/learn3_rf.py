@@ -7,20 +7,18 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import RandomizedSearchCV
 from scipy.stats import randint as sp_randint
 
-
 titanic_train = pd.read_csv("train_processed.csv",index_col="PassengerId")
 
-
-feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","TicketGroup"]
+feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit","Ticket-5digit","Ticket-6digit","Ticket-7digit","Ticket-A","Ticket-C","Ticket-F","Ticket-Others","Ticket-P","Ticket-S","Ticket-W"]
 Xtrain = titanic_train[feature_names]
 ytrain = titanic_train["Survived"]
 
 param_dist = {"n_estimators":  sp_randint(100,1500),                
-              "max_depth": [2,3, 4,5,None],              
+              "max_depth": [2,3, 4,5,6,7,8,9,None],              
               "criterion": ["gini", "entropy"]}
 
 rf = RandomForestClassifier(oob_score=True,verbose=1)
-searchcv = RandomizedSearchCV(estimator=rf, param_distributions=param_dist,n_iter=200,verbose=1)
+searchcv = RandomizedSearchCV(estimator=rf, param_distributions=param_dist,n_iter=200)
 searchcv.fit(Xtrain,ytrain)    
 
 searchcv.best_score_                                  
@@ -31,12 +29,12 @@ rf = searchcv.best_estimator_
 sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feature_names),reverse=True)
 
 # ---------------------------------------------------- #
-titanic_test = pd.DataFrame.from_csv("test_processed.csv")
+titanic_test = pd.read_csv("test_processed.csv",index_col="PassengerId")
 Xtest = titanic_test[feature_names]
 
 predictions = rf.predict(Xtest)
 submission = pd.DataFrame({
-        "PassengerId": titanic_test["PassengerId"],
+        "PassengerId": titanic_test.index,
         "Survived": predictions
     })
 submission.to_csv("submit_rf.csv", index=False)

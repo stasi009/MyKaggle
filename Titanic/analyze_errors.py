@@ -10,8 +10,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.svm import LinearSVC
 
 # --------------------------- load train data
-titanic_train = pd.DataFrame.from_csv("train_processed.csv")
-titanic_train = titanic_train.set_index("PassengerId")
+titanic_train = pd.read_csv("train_processed.csv",index_col="PassengerId")
 
 #feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","EmbarkC","EmbarkQ","EmbarkS"]
 feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale"]

@@ -1,21 +1,20 @@
-
+﻿
 import numpy as np
 import pandas as pd
 
 def read_result(filename):
-    results = pd.read_csv(filename)
-    results = results.set_index("PassengerId")
+    results = pd.read_csv(filename,index_col="PassengerId")
     results = results.iloc[:,0]
     results[results == 0] = -1
     return results
     
-lr_results = read_result("submission_lr.csv")
-rf_entropy_results = read_result("submission_rf_entropy.csv")
-rf_gini_results = read_result("submission_rf_gini.csv")
+lr_results = read_result("submit_lr.csv")
+rf_results = read_result("submit_rf.csv")
+svc_results = read_result("submit_linear_svc.csv")
 
-results = pd.concat([lr_results,rf_entropy_results,rf_gini_results],axis=1, keys=["lr","rf_entropy","rf_gini"])
+results = pd.concat([lr_results,rf_results,svc_results],axis=1, keys=["lr","rf","svc"])
 
-flag = results.lr + results.rf_entropy + results.rf_gini
+flag = results.lr + results.rf + results.svc
 flag = (flag > 0).astype(int)
 
-flag.to_csv("submission_average.csv")
+flag.to_csv("submit_average.csv")
