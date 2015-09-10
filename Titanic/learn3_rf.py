@@ -13,7 +13,7 @@ feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit",
 Xtrain = titanic_train[feature_names]
 ytrain = titanic_train["Survived"]
 
-param_dist = {"n_estimators":  sp_randint(100,1500),                
+param_dist = {"n_estimators":  sp_randint(1000,5000),                
               "max_depth": [2,3, 4,5,6,7,8,9,None],              
               "criterion": ["gini", "entropy"]}
 
@@ -24,6 +24,12 @@ searchcv.fit(Xtrain,ytrain)
 searchcv.best_score_                                  
 searchcv.best_estimator_
 searchcv.best_params_
+
+import pickle
+outfile = open('rf.pkl', 'wb')
+pickle.dump(searchcv.best_estimator_,outfile)
+outfile.close()
+
 
 rf = searchcv.best_estimator_
 sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feature_names),reverse=True)

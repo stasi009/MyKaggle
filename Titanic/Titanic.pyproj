@@ -60,6 +60,9 @@
     </Compile>
     <Compile Include="preprocess.py" />
     <Compile Include="titanic.py" />
+    <Compile Include="train_boosttree.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

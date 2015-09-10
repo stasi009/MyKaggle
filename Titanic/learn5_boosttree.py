@@ -17,7 +17,7 @@ ytrain = titanic_train["Survived"]
 # ---------------------- train
 loss = ['deviance', 'exponential']
 learning_rate = np.logspace(-5,2)
-n_estimate_dist = sp_randint(100,1000)
+n_estimate_dist = sp_randint(1000,5000)
 max_depth_dist = sp_randint(1,9)
 param_dist = dict(loss=loss,
                 learning_rate=learning_rate,
@@ -50,12 +50,19 @@ submission.to_csv("submit_gbdt.csv", index=False)
 
 
 import pickle
-f = open('gbdt2.pkl', 'wb')
-pickle.dump(searchcv.best_estimator_,f)
-f.close()
+inf = open('gbdt.pkl', 'rb')
+gbdt = pickle.load(inf)
+inf.close()
 
-import pprint
-f = open('gbdt.pkl', 'rb')
-clf = pickle.load(f)
-pprint.pprint( clf)
-f.close()
+sorted(zip(map(lambda x: round(x, 4), gbdt.feature_importances_), feature_names),reverse=True)
+
+
+titanic_test = pd.read_csv("test_processed.csv",index_col="PassengerId")
+Xtest = titanic_test[feature_names]
+
+predictions = gbdt.predict(Xtest)
+submission = pd.DataFrame({
+        "PassengerId": titanic_test.index,
+        "Survived": predictions
+    })
+submission.to_csv("submit_gbdt.csv", index=False)
