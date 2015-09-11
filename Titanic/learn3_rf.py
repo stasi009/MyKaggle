@@ -30,9 +30,13 @@ outfile = open('rf.pkl', 'wb')
 pickle.dump(searchcv.best_estimator_,outfile)
 outfile.close()
 
-
 rf = searchcv.best_estimator_
 sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), feature_names),reverse=True)
+
+
+predict_on_train = rf.predict(Xtrain)
+wrong_samples = titanic_train[predict_on_train != ytrain]
+wrong_samples.to_csv("wrong_rf.csv",index_col="PassengerId")
 
 # ---------------------------------------------------- #
 titanic_test = pd.read_csv("test_processed.csv",index_col="PassengerId")

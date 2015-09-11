@@ -25,7 +25,10 @@
     <Compile Include="analyze_errors2.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="analyze_errors.py">
+    <Compile Include="analyze_errors1.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="analyze_errors3.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="average.py">
@@ -35,9 +38,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="inspect_features.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="learn1_lr.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="learn2_lrcv.py">

@@ -31,6 +31,10 @@ lrcv.fit(Xtrain_scaled,ytrain)
 lrcv.C_
 lrcv.score(Xtrain_scaled,ytrain)
 
+predict_train = lrcv.predict(Xtrain_scaled)
+wrong_samples = titanic_train[ predict_train != ytrain ]
+wrong_samples.to_csv("wrong_lr.csv",index_col="PassengerId")
+
 def pretty_print_coef(coefs, names=None, sort=False):
     if names == None:
         names = ["X%s" % x for x in range(len(coefs))]
@@ -39,6 +43,10 @@ def pretty_print_coef(coefs, names=None, sort=False):
         lst = sorted(lst,  key = lambda x:-np.abs(x[0]))
     return " + ".join("%s * %s" % (round(coef, 3), name)     for coef, name in lst)
 pretty_print_coef(lrcv.coef_.ravel(),feature_names,True)
+
+coefs = pd.DataFrame({"names":feature_names,"coefs":lrcv.coef_.ravel()},columns=["names","coefs"])
+coefs["rank"] = np.abs(coefs.coefs)
+coefs.sort_index(by="rank",inplace=True,ascending=False)
 
 # --------------------------- predict
 predictions = lrcv.predict(Xtest_scaled)
