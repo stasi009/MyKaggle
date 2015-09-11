@@ -9,7 +9,8 @@ from sklearn.linear_model import LogisticRegressionCV
 # --------------------------- load train data
 titanic_train = pd.read_csv("train_processed.csv",index_col="PassengerId")
 
-feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit","Ticket-5digit","Ticket-6digit","Ticket-7digit","Ticket-A","Ticket-C","Ticket-F","Ticket-Others","Ticket-P","Ticket-S","Ticket-W"]
+# feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit","Ticket-5digit","Ticket-6digit","Ticket-7digit","Ticket-A","Ticket-C","Ticket-F","Ticket-Others","Ticket-P","Ticket-S","Ticket-W"]
+feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit","Ticket-5digit","Ticket-6digit","GiveHelp","RecvHelp"]
 Xtrain = titanic_train[feature_names]
 ytrain = titanic_train["Survived"]
 
@@ -47,6 +48,7 @@ pretty_print_coef(lrcv.coef_.ravel(),feature_names,True)
 coefs = pd.DataFrame({"names":feature_names,"coefs":lrcv.coef_.ravel()},columns=["names","coefs"])
 coefs["rank"] = np.abs(coefs.coefs)
 coefs.sort_index(by="rank",inplace=True,ascending=False)
+del coefs["rank"]
 
 # --------------------------- predict
 predictions = lrcv.predict(Xtest_scaled)

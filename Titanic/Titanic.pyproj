@@ -60,7 +60,13 @@
     </Compile>
     <Compile Include="preprocess.py" />
     <Compile Include="titanic.py" />
-    <Compile Include="train_boosttree.py">
+    <Compile Include="train_test_boosttree.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="train_test_rf.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="userdef_index.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
