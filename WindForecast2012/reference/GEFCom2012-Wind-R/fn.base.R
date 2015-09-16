@@ -425,11 +425,9 @@ fn.pred.eval <- function(data.pred,
   
   rmse.overall <- rmse(data.pred$wp, data.pred[[pred.col]])
   data.pred$pred.val <- data.pred[[pred.col]]
-  data.pred <- data.table(data.pred)[
-    ,list(rmse = rmse(wp, pred.val)),
+  data.pred <- data.table(data.pred)[    ,list(rmse = rmse(wp, pred.val)),
     by="farm"]
-  data.pred <- rbind(data.frame(data.pred),
-                     data.frame(farm = NA, rmse = rmse.overall))
+  data.pred <- rbind(data.frame(data.pred),                     data.frame(farm = NA, rmse = rmse.overall))
   print(data.pred)
                          
   invisible(data.pred)                       

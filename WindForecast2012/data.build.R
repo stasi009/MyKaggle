@@ -5,7 +5,7 @@ source("fn.base.R")
 # training/testing data
 #############################################################
 library(data.table)
-data.hist.dt <- read.csv(fn.dat.raw.dir("train.csv.gz"),
+data.hist.dt <- read.csv("train.csv",
                          colClasses = c("character", "numeric",
                                         "numeric","numeric","numeric",
                                         "numeric","numeric","numeric"))
@@ -13,7 +13,7 @@ data.hist.dt$date <- as.POSIXct(
   data.hist.dt$date,
   format = "%Y%m%d%H", tz = "GMT")
 
-data.test.keys <- read.csv(fn.dat.raw.dir("benchmark.csv.gz"),
+data.test.keys <- read.csv("benchmark.csv",
                            colClasses = c("integer","character", "numeric",
                                           "numeric","numeric","numeric",
                                           "numeric","numeric","numeric"))
@@ -81,45 +81,41 @@ min.forecast <- as.POSIXct(min(data.tr.keys$start), tz = "GMT")
 min.forecast <- min.forecast - 
   as.difftime(35, unit="hours")
 for (i in 1:7) {
-  data.forecast.cur <- read.csv(fn.dat.raw.dir(paste("windforecasts_wf",
-                                                i, ".csv.gz", sep="")))
+  data.forecast.cur <- read.csv(paste("windforecasts_wf",i, ".csv", sep=""))
   data.forecast.cur$date <- as.POSIXct(
     as.character(data.forecast.cur$date),
     format = "%Y%m%d%H", tz = "GMT")
-  data.forecast.cur$pdate <- data.forecast.cur$date + 
-    as.difftime(data.forecast.cur$hors, unit="hours")
-  data.forecast.cur <- data.forecast.cur[
-    data.forecast.cur$pdate >=min.forecast, ]
+  
+  data.forecast.cur$pdate <- data.forecast.cur$date +     as.difftime(data.forecast.cur$hors, unit="hours")
+  data.forecast.cur <- data.forecast.cur[    data.forecast.cur$pdate >=min.forecast, ]
   data.forecast.cur$date <- as.character(data.forecast.cur$date)
   data.forecast.cur$pdate <- as.character(data.forecast.cur$pdate)
-  data.forecast.cur$wd_cut <- cut(data.forecast.cur$wd, seq(0,360,30),
-                                  include.lowest = T)
+  data.forecast.cur$wd_cut <- cut(data.forecast.cur$wd, seq(0,360,30),                                  include.lowest = T)
+  
   data.forecast.cur <- data.forecast.cur[!is.na(data.forecast.cur$ws),]
   data.forecast.cur$farm <- i
-  keys.forescast <- data.forecast.cur$date %in% c(data.tr.keys$start,
-                                                  data.test.keys$start)
-  keys.blacklist <- data.forecast.cur$pdate %in% c(data.tr.keys$date,
-                                  data.test.keys$date)
+  
+  keys.forescast <- data.forecast.cur$date %in% c(data.tr.keys$start,  data.test.keys$start)
+  keys.blacklist <- data.forecast.cur$pdate %in% c(data.tr.keys$date,       data.test.keys$date)
   keys.others <- !keys.forescast & !keys.blacklist 
   keys.tr <- keys.blacklist & data.forecast.cur$pdate %in% c(data.tr.keys$date)
   
   data.forecast.cur$start <- data.forecast.cur$date
   data.forecast.cur$date <- data.forecast.cur$pdate
   data.forecast.cur$dist <- data.forecast.cur$hors
-  data.forecast.cur$dist <- as.factor(sprintf("%02d", 
-    data.forecast.cur$hors))
+  data.forecast.cur$dist <- as.factor(sprintf("%02d",   data.forecast.cur$hors))
+  
   
   data.forecast.cur$start <- as.POSIXct(data.forecast.cur$start, tz = "GMT")
-  data.forecast.cur$turn <- as.factor(format(
-    data.forecast.cur$start, "%H"))
+  data.forecast.cur$turn <- as.factor(format(    data.forecast.cur$start, "%H"))
+  
   data.forecast.cur$start <- as.character(data.forecast.cur$start)
+  
   data.forecast.cur$set <- NA
-  data.forecast.cur$set[keys.forescast] <- rep(1:(sum(keys.forescast)/48), 
-                                               each=48)
-  data.forecast.cur$set[keys.others] <- rep(1:(sum(keys.others)/(36*4)), 
-                                               each=(36*4))
-  data.forecast.cur$set[keys.tr] <- rep(1:(sum(keys.tr)/(48*4)), 
-                                            each=(48*4))
+  data.forecast.cur$set[keys.forescast] <- rep(1:(sum(keys.forescast)/48),  each=48)
+  data.forecast.cur$set[keys.others] <- rep(1:(sum(keys.others)/(36*4)),    each=(36*4))
+  data.forecast.cur$set[keys.tr] <- rep(1:(sum(keys.tr)/(48*4)),            each=(48*4))
+  
   data.forecast.keys.dt <- rbind(data.forecast.keys.dt, 
                             data.forecast.cur[keys.forescast | keys.tr,])
   data.forecast.others.dt <- rbind(data.forecast.others.dt, 
@@ -129,10 +125,8 @@ for (i in 1:7) {
 cols.forecast <- c("date","farm","start", "dist","turn", "set",
                    "ws","wd","wd_cut")
 keys.forescast <- c("date", "farm")
-data.forecast.keys.dt <- data.table(data.forecast.keys.dt[, cols.forecast],
-                                    key = c(keys.forescast))
-data.forecast.others.dt <- data.table(data.forecast.others.dt[, cols.forecast],
-                                    key = keys.forescast)
+data.forecast.keys.dt <- data.table(data.forecast.keys.dt[, cols.forecast],          key = c(keys.forescast))
+data.forecast.others.dt <- data.table(data.forecast.others.dt[, cols.forecast],      key = keys.forescast)
 
 data.forecast.all.dt <- rbind(data.forecast.keys.dt,
                               data.forecast.others.dt)
@@ -165,8 +159,7 @@ hist.length <- 6
 for (i in 1:hist.length) {
   data.col <- paste("wp_hm",sprintf("%02d", i),sep="")
   data.col.key <- data.table(as.character(data.feat.dt$start - 
-    as.difftime(i-1, unit="hours")), 
-                             data.feat.dt$farm)
+    as.difftime(i-1, unit="hours")),                              data.feat.dt$farm)
   data.feat.dt[[data.col]] <- data.hist2.dt[data.col.key]$wp
 }
 
@@ -217,12 +210,10 @@ data.farm.ws.dt <- foreach (farm = 1:7, .combine=rbind) %dopar% {
   library(data.table)
   library(gbm)
   
-  data.feat.all <- data.frame(rbind(data.forecast.keys.dt, 
-                                    data.forecast.others.dt))
+  data.feat.all <- data.frame(rbind(data.forecast.keys.dt,   data.forecast.others.dt))
   data.feat.all <- data.feat.all[data.feat.all$farm %in% farm,]
   data.feat.all <- fn.append.dt(data.feat.all,  data.hist.dt)
-  data.feat.all$wd_cut <- cut(data.feat.all$wd, seq(0,360,8),
-                              include.lowest = T)
+  data.feat.all$wd_cut <- cut(data.feat.all$wd, seq(0,360,8),        include.lowest = T)
   data.feat.all$ws2 <- data.feat.all$ws^2
   data.feat.all$ws3 <- data.feat.all$ws^3
   
@@ -233,8 +224,7 @@ data.farm.ws.dt <- foreach (farm = 1:7, .combine=rbind) %dopar% {
   data.cv.folds <- 5
   data.test.k <- data.cv.folds+1
   set.seed(13213)
-  data.cv.idx <- cvFolds(length(unique(data.feat.all$set)), 
-                         K=data.cv.folds)
+  data.cv.idx <- cvFolds(length(unique(data.feat.all$set)),      K=data.cv.folds)
   
   
   data.pred <- NULL
@@ -252,33 +242,27 @@ data.farm.ws.dt <- foreach (farm = 1:7, .combine=rbind) %dopar% {
     }
     models.tr.ws <-
       gbm(
-        formula =  wp ~ 
-          wd_cut*(ws + ws2 + ws3),
-        data = rbind(data.tr.farm[data.tr.cv.idx,],
-                     data.tr.farm[data.test.cv.idx,]),
+        formula =  wp ~ wd_cut*(ws + ws2 + ws3),
+        data = rbind(data.tr.farm[data.tr.cv.idx,],     data.tr.farm[data.test.cv.idx,]),
         n.trees = 1000,
         interaction.depth = 3,
         n.minobsinnode = 5,
         shrinkage =  0.01,
         distribution = "gaussian",
-        train.fraction = length(data.tr.cv.idx)/
-          (length(data.tr.cv.idx)+length(data.test.cv.idx))
+        train.fraction = length(data.tr.cv.idx)/(length(data.tr.cv.idx)+length(data.test.cv.idx))
       )
-    data.cv.pred$ws.angle <- predict(models.tr.ws, data.cv.pred, 
-                                     models.tr.ws$n.trees)
+    data.cv.pred$ws.angle <- predict(models.tr.ws, data.cv.pred, models.tr.ws$n.trees)
     data.pred <- rbind(data.pred, data.cv.pred)
   }
   fn.pred.eval(data.pred)
   
   sink()
   
-  data.pred[, c("date", "farm", "dist",
-                "wp", "ws.angle")]
+  data.pred[, c("date", "farm", "dist", "wp", "ws.angle")]
 }
 fn.kill.wk()
 toc()
-fn.pred.eval(data.farm.ws.dt[
-  data.farm.ws.dt$date > max(data.tr.keys$date),], "ws.angle")
+fn.pred.eval(data.farm.ws.dt[ data.farm.ws.dt$date > max(data.tr.keys$date),], "ws.angle")
 # farm      rmse
 # 1    1 0.1842614
 # 2    2 0.1703720
