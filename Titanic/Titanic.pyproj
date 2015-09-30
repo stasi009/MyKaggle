@@ -30,7 +30,13 @@
     <Compile Include="common.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="guess.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lr.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="reweight_learners.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="train_test_adaboost.py">

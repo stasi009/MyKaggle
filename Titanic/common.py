@@ -4,6 +4,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 
+def make_coefs_frame(feature_names,coefs):
+    coefs = pd.DataFrame({"names":feature_names,"coefs":coefs},columns=["names","coefs"])
+    coefs["importance"] = np.abs(coefs.coefs)
+    coefs.sort_index(by="importance",inplace=True,ascending=False)
+    coefs.set_index("names",inplace=True)
+    return coefs
+
 def survive_cross_tab(df,featName,figsize=(10,4)):
     crosstab = pd.crosstab(df.Survived,df[featName])
     print "**************** counts"
