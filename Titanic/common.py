@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import pickle
 
 def survive_cross_tab(df,featName,figsize=(10,4)):
     crosstab = pd.crosstab(df.Survived,df[featName])
@@ -20,6 +21,14 @@ def survive_cross_tab(df,featName,figsize=(10,4)):
     fig, axes = plt.subplots(1, 2,figsize=figsize)
     row_crosstab.plot(kind="bar",stacked=True,ax= axes[0])
     col_crosstab.plot(kind="bar",stacked=True,ax= axes[1])
+
+def dump_predictor(filename,learner):
+    with open(filename, 'wb') as outfile:
+        pickle.dump(learner,outfile)
+
+def load_predictor(filename):
+    with open(filename,"rb") as infile:
+        return pickle.load(infile)
 
 def make_submission(testindex,predictions,filename):
     submission = pd.DataFrame({

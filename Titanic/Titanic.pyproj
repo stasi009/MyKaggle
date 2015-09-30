@@ -26,12 +26,15 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="average_results.py" />
     <Compile Include="common.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="lr.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="train_test_boosttree.py" />
+    <Compile Include="train_test_rf.py" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
