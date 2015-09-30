@@ -10,7 +10,7 @@ import common
 
 feature_names = ["Pclass","Age","SibSp","Parch","Fare","IsMale","Ticket-4digit","Ticket-5digit","Ticket-6digit"]
 
-def train():
+def train_cv():
     # ---------------------- load the data
     train_df = pd.read_csv("train_processed.csv",index_col="PassengerId")
     Xtrain = train_df[feature_names]
@@ -35,32 +35,32 @@ def train():
     print "best score: ",searchcv.best_score_                                  
     print "best parameters: ",searchcv.best_params_
 
-    common.dump_predictor('gbdt.pkl',searchcv.best_estimator_)
+    common.dump_predictor('gbdt-cv.pkl',searchcv.best_estimator_)
     print "--------------------- GBDT saved into file"
 
-def wholedata_train_test():
-    # ------------------------------ load
-    best_estimator = common.load_predictor("gbdt.pkl")
-    gbdt = GradientBoostingClassifier(verbose=1,
-                                      loss=best_estimator.loss,
-                                      learning_rate = best_estimator.learning_rate,
-                                      n_estimators = best_estimator.n_estimators,
-                                      max_depth = best_estimator.max_depth)
-
-    # ------------------------------ train
+def train_whole():
     train_df = pd.read_csv("train_processed.csv",index_col="PassengerId")
     Xtrain = train_df[feature_names]
     ytrain = train_df["Survived"]
 
+    # ------------------------------ load
+    # this estimator is trained on partial dataset, without using the valiation part
+    prev_estimator = common.load_predictor("gbdt-cv.pkl")
+    print "cross-validation score: %f"%(prev_estimator.score(Xtrain,ytrain))
+
+    # ------------------------------ train
+    # after we get the paramters, we should train another estimator with all data
+    gbdt = GradientBoostingClassifier(verbose=1,
+                                      loss=prev_estimator.loss,
+                                      learning_rate = prev_estimator.learning_rate,
+                                      n_estimators = prev_estimator.n_estimators,
+                                      max_depth = prev_estimator.max_depth)
+    print gbdt
     gbdt.fit(Xtrain,ytrain)
-    print "training score: ",gbdt.score(Xtrain,ytrain)
+    print "training with all data, get score: ",gbdt.score(Xtrain,ytrain)
 
-    # ------------------------------ test
-    test_df = pd.read_csv("test_processed.csv",index_col="PassengerId")
-    Xtest = test_df[feature_names]
-
-    predictions = gbdt.predict(Xtest)
-    common.make_submission(Xtest.index,predictions,"submit_gbdt.csv")
+    # ------------------------------ save
+    common.dump_predictor("gbdt.pkl",gbdt)
 
 def test():
     test_df = pd.read_csv("test_processed.csv",index_col="PassengerId")
@@ -77,8 +77,10 @@ if __name__ == "__main__":
     parser.add_argument("job", help="train or test?")
     
     args = parser.parse_args()
-    if args.job == "train":
-        train()
+    if args.job == "train_cv":
+        train_cv()
+    elif args.job == "train_whole":
+        train_whole()
     elif args.job == "test":
         test()
     else:
