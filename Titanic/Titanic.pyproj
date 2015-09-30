@@ -33,7 +33,13 @@
     <Compile Include="lr.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="train_test_adaboost.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="train_test_boosttree.py" />
+    <Compile Include="train_test_knn.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="train_test_rf.py" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
