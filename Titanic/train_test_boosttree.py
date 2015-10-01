@@ -19,15 +19,15 @@ def train_cv():
     # ---------------------- train
     loss = ['deviance', 'exponential']
     learning_rate = np.logspace(-5,1)
-    n_estimate_dist = sp_randint(1000,4800)
-    max_depth_dist = sp_randint(1,10)
+    n_estimate_dist = sp_randint(500,3000)
+    max_depth_dist = sp_randint(1,6)
     param_dist = dict(loss=loss,
                     learning_rate=learning_rate,
                     n_estimators=n_estimate_dist,
                     max_depth=max_depth_dist)
 
     gbdt = GradientBoostingClassifier(verbose=1)
-    searchcv = RandomizedSearchCV(estimator=gbdt, param_distributions=param_dist,n_iter=210,verbose=1,n_jobs=-1)
+    searchcv = RandomizedSearchCV(estimator=gbdt, param_distributions=param_dist,n_iter=210,verbose=1,n_jobs=4)
 
     print "--------------------- RandomizedSearchCV begins"
     searchcv.fit(Xtrain,ytrain)      

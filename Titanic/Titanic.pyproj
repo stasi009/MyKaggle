@@ -30,7 +30,7 @@
     <Compile Include="common.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="guess.py">
+    <Compile Include="focus_error.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="lr.py">

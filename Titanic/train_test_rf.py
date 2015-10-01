@@ -20,8 +20,8 @@ def train():
     Xtrain = train_df[feature_names]
     ytrain = train_df["Survived"]
 
-    param_dist = {"n_estimators":  sp_randint(1000,4800),                
-                  "max_depth": [2,3, 4,5,6,7,8,9,None],              
+    param_dist = {"n_estimators":  sp_randint(500,3000),                
+                  "max_depth": [2,3, 4,5,6,None],              
                   "criterion": ["gini", "entropy"]}
     njobs = 4
     rf = RandomForestClassifier(oob_score=True,verbose=1,n_jobs=njobs)
