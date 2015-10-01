@@ -33,6 +33,9 @@
     <Compile Include="focus_error.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="guess.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lr.py">
       <SubType>Code</SubType>
     </Compile>
