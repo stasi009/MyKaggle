@@ -9,7 +9,7 @@ from dateutil.parser import parse as dt_parse
 
 def parse_day_time(strtime):
     dt = dt_parse(strtime)
-    return pd.Series( [dt.month,dt.day,dt.weekday(),dt.hour],index=["month","day","weekday","hour"])
+    return pd.Series( [dt.month,dt.day,dt.isoweekday(),dt.hour],index=["month","day","weekday","hour"])
 
 def expandtime_save(oriFilename):
     df = pd.read_csv(oriFilename,index_col = "datetime")
