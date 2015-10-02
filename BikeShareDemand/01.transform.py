@@ -9,21 +9,33 @@ from dateutil.parser import parse as dt_parse
 
 def parse_day_time(strtime):
     dt = dt_parse(strtime)
-    return pd.Series( [dt.month,dt.day,dt.isoweekday(),dt.hour],index=["month","day","weekday","hour"])
+    return pd.Series([dt.month,dt.day,dt.isoweekday(),dt.hour],index=["month","day","weekday","hour"])
 
-def expandtime_save(oriFilename):
+def logcounts_to_counts(x):
+    return np.exp(x) - 1
+
+def transform_save(oriFilename):
     df = pd.read_csv(oriFilename,index_col = "datetime")
 
+    # ---------------- extend time information
     daytimes = df.index.to_series()
     time_infos = daytimes.apply(parse_day_time)
+    extend_features = [time_infos,df]
+    
+    # ---------------- convert counts into log domain
+    if "count" in df.columns:# in training dataset
+        count_cols = ["casual","registered"]
+        logcounts = [ np.log(df[c] + 1) for c in count_cols]
+        extend_features.append(pd.concat(logcounts,axis=1,keys=[ "log_" + c for c in count_cols]))
 
-    extend_df = pd.concat([time_infos,df],axis=1)
+    extend_df = pd.concat(extend_features,axis=1)
 
     baseFilename = os.path.splitext(oriFilename)[0]
     outFilename = baseFilename + "_extend.csv"
 
     extend_df.to_csv(outFilename,index_label="datetime")
 
-expandtime_save("train.csv")
-expandtime_save("test.csv")
+if __name__ == "__main__":
+    transform_save("train.csv")
+    transform_save("test.csv")
 

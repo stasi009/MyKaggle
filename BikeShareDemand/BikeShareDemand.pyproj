@@ -33,6 +33,9 @@
     <Compile Include="02.inspect.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="03.gbdt.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
