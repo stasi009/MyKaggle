@@ -1,4 +1,4 @@
-
+﻿
 import os.path
 import numpy as np
 import pandas as pd
@@ -44,21 +44,17 @@ class Estimator(object):
 def train(feature_names,estimators):
     traindf = pd.read_csv("train_extend.csv",index_col="datetime")
 
-    parm_dist = dict(learning_rate=np.logspace(-4,0,20),                    
-                      n_estimators=sp_randint(100,1500),                    
-                      max_depth=sp_randint(3,6))
+    parm_dist = dict(learning_rate=[0.001,0.005,0.01,0.02,0.05,0.1,0.3],                   
+                     n_estimators=sp_randint(100,2000),                    
+                     max_depth=sp_randint(3,6),
+                     min_samples_leaf = range(1,10)
+                     )
     n_iter = 300
-    n_jobs = -1
-    best_cv_scores = {}
+    n_jobs = 6
     for estimator in estimators:
         best_cv_score = estimator.train(traindf,parm_dist,n_iter,n_jobs)
-        best_cv_scores[estimator.target_column] = best_cv_score
         print "************* '%s' got best CV score: %f"%(estimator.target_column,best_cv_score)
-
         estimator.dump()
-
-    for (k,v) in best_cv_scores.viewitems():
-        print "************* '%s' got best CV score: %f"%(k,v)
 
 def test(feature_names,estimators):
     testdf = pd.read_csv("test_extend.csv",index_col="datetime")
