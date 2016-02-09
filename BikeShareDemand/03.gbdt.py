@@ -48,17 +48,13 @@ def train(feature_names,estimators):
                       n_estimators=sp_randint(100,1500),                    
                       max_depth=sp_randint(3,6))
     n_iter = 300
-    n_jobs = -1
-    best_cv_scores = {}
+    n_jobs = 4 
     for estimator in estimators:
         best_cv_score = estimator.train(traindf,parm_dist,n_iter,n_jobs)
-        best_cv_scores[estimator.target_column] = best_cv_score
         print "************* '%s' got best CV score: %f"%(estimator.target_column,best_cv_score)
 
         estimator.dump()
 
-    for (k,v) in best_cv_scores.viewitems():
-        print "************* '%s' got best CV score: %f"%(k,v)
 
 def test(feature_names,estimators):
     testdf = pd.read_csv("test_extend.csv",index_col="datetime")
