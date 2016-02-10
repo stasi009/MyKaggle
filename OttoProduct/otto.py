@@ -1,4 +1,4 @@
-
+﻿
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +7,6 @@ from scipy.stats import randint as sp_randint
 
 import xgboost as xgb
 import sklearn.preprocessing as skpreprocess
-from sklearn.ensemble import RandomForestClassifier
 
 train_csv = pd.read_csv("train.csv",index_col = "id")
 train_datas = train_csv.iloc[:,xrange(93)]
