@@ -1,4 +1,4 @@
-
+﻿
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ from sklearn.grid_search import RandomizedSearchCV
 
 def train(seed,criterion):
     # ------------------------ load and prepare the data
-    train_csv = pd.read_csv("train.csv",index_col = "id")
+    train_csv = pd.read_csv("1st-features/train.csv",index_col = "id")
     Xtrain = train_csv.iloc[:,xrange(93)]
     train_labels = train_csv.loc[:,"target"]
 
