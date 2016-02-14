@@ -5,12 +5,11 @@ import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 from scipy.stats import randint as sp_randint
 
-import xgboost as xgb
-import sklearn.preprocessing as skpreprocess
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import RandomizedSearchCV
 
 import common
+
 
 def train(seed,criterion):
     # ------------------------ load and prepare the data
