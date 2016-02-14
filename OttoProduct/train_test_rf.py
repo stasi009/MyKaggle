@@ -10,14 +10,11 @@ import sklearn.preprocessing as skpreprocess
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import RandomizedSearchCV
 
+import common
+
 def train(seed,criterion):
     # ------------------------ load and prepare the data
-    train_csv = pd.read_csv("1st-features/train.csv",index_col = "id")
-    Xtrain = train_csv.iloc[:,xrange(93)]
-    train_labels = train_csv.loc[:,"target"]
-
-    labelencoder = skpreprocess.LabelEncoder()
-    ytrain = labelencoder.fit_transform(train_labels)
+    trainData = common.RawTrainData("raw_datas/train.csv")
 
     # ------------------------ prepare the estimator
     param_dist = {"n_estimators":  sp_randint(500,3000),              
@@ -32,7 +29,7 @@ def train(seed,criterion):
 
     # ------------------------ search the best parameters
     print "#################### search cv begins"
-    searchcv.fit(Xtrain,ytrain)    
+    searchcv.fit(trainData.Xtrain,trainData.ytrain)    
     print "#################### search cv ends"
     print "best score: ",searchcv.best_score_                                  
     print "best parameters: ",searchcv.best_params_

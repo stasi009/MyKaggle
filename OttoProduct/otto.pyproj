@@ -22,10 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="commfuncs.py">
+    <Compile Include="common.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="otto.py" />
+    <Compile Include="inspect.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="train_test_rf.py">
       <SubType>Code</SubType>
     </Compile>
