@@ -38,8 +38,8 @@ def colors_iterator(num_lables):
 def cv_predict(predictor,tag,trainData,num_cv,random_seed=None):
     folds_predicts = []
     logloss = 0.0
-    kfolds = StratifiedKFold(y=trainData.ytrain,n_folds=num_cv)
 
+    kfolds = StratifiedKFold(y=trainData.ytrain,n_folds=num_cv)
     for train_indices, test_indices in kfolds:
         # ---------------------- fit on training fold
         fold_xtrain = trainData.Xtrain.iloc[train_indices,:]

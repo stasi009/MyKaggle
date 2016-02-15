@@ -8,23 +8,26 @@ from scipy.stats import randint as sp_randint
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import RandomizedSearchCV
 
-import common
+import commfuncs
 
+def train(seed):
+    num_cv = 4
 
-def train(seed,criterion):
     # ------------------------ load and prepare the data
-    trainData = common.RawTrainData("raw_datas/train.csv")
+    trainData = commfuncs.RawTrainData("raw_datas/train.csv")
 
     # ------------------------ prepare the estimator
     param_dist = {"n_estimators":  sp_randint(500,3000),              
-                  "max_depth": [2,3, 4,5,6,None],
+                  "max_depth": [ 5,10,20,30,50,100,None],
+                  "min_samples_split": sp_randint(2,20),
+                  "max_features": ["auto","sqrt","log2",None], 
+                  "criterion": ["gini", "entropy"],
                   "min_samples_leaf": [5,10,20,30,40,50]}
     njobs = 4
-    rf = RandomForestClassifier(oob_score=True,verbose=1,n_jobs=njobs,
-                                random_state=seed,criterion=criterion)
+    rf = RandomForestClassifier(oob_score=True,verbose=1,n_jobs=njobs,random_state=seed)
     searchcv = RandomizedSearchCV(estimator=rf, param_distributions=param_dist,
                                   scoring = "log_loss",random_state=seed,                                  
-                                  n_iter=200,n_jobs=njobs)
+                                  n_iter=200,n_jobs=njobs,cv=num_cv)
 
     # ------------------------ search the best parameters
     print "#################### search cv begins"
@@ -33,5 +36,15 @@ def train(seed,criterion):
     print "best score: ",searchcv.best_score_                                  
     print "best parameters: ",searchcv.best_params_
 
-    # ------------------------ cross-validation to estimate generalization error
+    # ------------------------ cross-validation to generate predicted probabilities
+    # ------------------------ preparing for stack generalization in next step
+    tag = "rf%d"%seed
+    logloss,cv_predict_probs = commfuncs.cv_predict(searchcv.best_estimator_,tag,trainData,num_cv,seed)
+
+    cv_predicted_probs.to_csv("meta_features/%s.csv"%tag,index_labels="index")
+    print "cv logloss is: %3.2f"%(logloss)
+
+if __name__ == "__main__":
+    train(9)
+
 

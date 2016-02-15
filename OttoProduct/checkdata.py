@@ -6,7 +6,7 @@ plt.style.use("ggplot")
 
 from sklearn.decomposition import PCA,KernelPCA
 
-import common
+import commfuncs
 
 def reduce2d_plot(reducer,trainData):
     Xtrain_2d = reducer.fit_transform(trainData.Xtrain)
@@ -20,7 +20,7 @@ def reduce2d_plot(reducer,trainData):
         plt.scatter(x2d[:,0],x2d[:,1],label=label,color=next(clr_it),alpha=0.5)
     # plt.legend(loc="best")
 
-trainData = common.RawTrainData("raw_datas/train.csv")
+trainData = commfuncs.RawTrainData("raw_datas/train.csv")
 trainData.Xtrain.describe()
 trainData.labels.value_counts().plot(kind="bar")
 

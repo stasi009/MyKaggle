@@ -22,16 +22,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="common.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="checkdata.py" />
+    <Compile Include="commfuncs.py" />
     <Compile Include="otto.py" />
-    <Compile Include="inspect.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="train_test_rf.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="random_forest.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
