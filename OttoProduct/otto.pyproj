@@ -25,7 +25,7 @@
     <Compile Include="checkdata.py" />
     <Compile Include="commfuncs.py" />
     <Compile Include="otto.py" />
-    <Compile Include="random_forest.py" />
+    <Compile Include="base_rf.py" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
