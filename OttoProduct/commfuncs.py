@@ -24,9 +24,9 @@ class RawTrainData(object):
         return np.asarray(self.labels == label)
 
 
-def dump_predictor(filename,learner):
+def dump_predictor(filename,predictor):
     with open(filename, 'wb') as outfile:
-        pickle.dump(learner,outfile)
+        pickle.dump(predictor,outfile)
 
 def load_predictor(filename):
     with open(filename,"rb") as infile:

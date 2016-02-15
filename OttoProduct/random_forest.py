@@ -1,4 +1,6 @@
 ﻿
+import argparse
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,6 +13,7 @@ from sklearn.grid_search import RandomizedSearchCV
 import commfuncs
 
 def train(seed):
+    tag = "rf%d"%seed
     num_cv = 4
 
     # ------------------------ load and prepare the data
@@ -36,15 +39,20 @@ def train(seed):
     print "best score: ",searchcv.best_score_                                  
     print "best parameters: ",searchcv.best_params_
 
+    # ------------------------ save the best estimator
+    commfuncs.dump_predictor("%s.pkl"%tag,searchcv.best_estimator_)
+
     # ------------------------ cross-validation to generate predicted probabilities
     # ------------------------ preparing for stack generalization in next step
-    tag = "rf%d"%seed
     logloss,cv_predict_probs = commfuncs.cv_predict(searchcv.best_estimator_,tag,trainData,num_cv,seed)
 
     cv_predicted_probs.to_csv("meta_features/%s.csv"%tag,index_labels="index")
     print "cv logloss is: %3.2f"%(logloss)
 
 if __name__ == "__main__":
-    train(9)
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("seed", help="random seed")
+    
+    args = parser.parse_args()
+    train(int( args.seed ))
 
