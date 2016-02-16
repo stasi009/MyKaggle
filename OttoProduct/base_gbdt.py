@@ -45,3 +45,6 @@ prediction = pd.DataFrame(prediction,index = testdata.index, columns = txt_label
 
 # save prediction into file
 prediction.to_csv("gbdt1.csv",index_label="id")
+
+
+xgb.cv(param,xg_train)
