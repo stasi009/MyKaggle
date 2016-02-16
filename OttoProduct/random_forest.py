@@ -26,7 +26,7 @@ def train(seed):
                   "max_features": ["auto","sqrt","log2",None], 
                   "criterion": ["gini", "entropy"],
                   "min_samples_leaf": [5,10,20,30,40,50]}
-    njobs = 4
+    njobs = -1
     rf = RandomForestClassifier(oob_score=True,verbose=1,n_jobs=njobs,random_state=seed)
     searchcv = RandomizedSearchCV(estimator=rf, param_distributions=param_dist,
                                   scoring = "log_loss",random_state=seed,                                  
@@ -44,7 +44,7 @@ def train(seed):
 
     # ------------------------ cross-validation to generate predicted probabilities
     # ------------------------ preparing for stack generalization in next step
-    logloss,cv_predict_probs = commfuncs.cv_predict(searchcv.best_estimator_,tag,trainData,num_cv,seed)
+    logloss,cv_predicted_probs = commfuncs.cv_predict(searchcv.best_estimator_,tag,trainData,num_cv,seed)
 
     cv_predicted_probs.to_csv("meta_features/%s.csv"%tag,index_labels="index")
     print "cv logloss is: %3.2f"%(logloss)
