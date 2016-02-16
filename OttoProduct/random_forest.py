@@ -40,7 +40,8 @@ def train(seed):
     print "best parameters: ",searchcv.best_params_
 
     # ------------------------ save the best estimator
-    commfuncs.dump_predictor("%s.pkl"%tag,searchcv.best_estimator_)
+    # stop saving the estimator, because it will 9G, too big
+    # commfuncs.dump_predictor("%s.pkl"%tag,searchcv.best_estimator_)
 
     # ------------------------ cross-validation to generate predicted probabilities
     # ------------------------ preparing for stack generalization in next step
