@@ -22,6 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="base_gbdt.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="checkdata.py" />
     <Compile Include="commfuncs.py" />
     <Compile Include="otto.py" />

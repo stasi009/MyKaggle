@@ -157,3 +157,6 @@ $RECYCLE.BIN/
 *.pyc
 /Titanic/rf.pkl
 *.pkl
+/OttoProduct/gbdt1.csv
+/OttoProduct/raw_datas/test.csv
+/OttoProduct/raw_datas/test.csv.zip
