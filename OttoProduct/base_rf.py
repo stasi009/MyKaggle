@@ -9,6 +9,7 @@ from scipy.stats import randint as sp_randint
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import RandomizedSearchCV
+from sklearn.externals import joblib
 
 import commfuncs
 
@@ -40,8 +41,8 @@ def train(seed):
     print "best parameters: ",searchcv.best_params_
 
     # ------------------------ save the best estimator
-    # stop saving the estimator, because it will 9G, too big
-    # commfuncs.dump_predictor("%s.pkl"%tag,searchcv.best_estimator_)
+    # use joblib to improve the disk efficiency when dumping the estimator
+    joblib.dump(searchcv.best_estimator_,"%s.pkl"%tag)
 
     # ------------------------ cross-validation to generate predicted probabilities
     # ------------------------ preparing for stack generalization in next step

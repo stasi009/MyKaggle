@@ -1,5 +1,4 @@
 ﻿
-import pickle
 import pandas as pd
 import numpy as np
 import matplotlib.cm as colormap
@@ -22,15 +21,6 @@ class RawTrainData(object):
 
     def boolindex_by_label(self,label):
         return np.asarray(self.labels == label)
-
-
-def dump_predictor(filename,predictor):
-    with open(filename, 'wb') as outfile:
-        pickle.dump(predictor,outfile)
-
-def load_predictor(filename):
-    with open(filename,"rb") as infile:
-        return pickle.load(infile)
 
 def colors_iterator(num_lables):
     return iter(colormap.rainbow(np.linspace(0, 1, num_lables)))
