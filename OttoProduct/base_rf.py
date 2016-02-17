@@ -24,7 +24,7 @@ def train(seed):
     param_dist = {"n_estimators":  sp_randint(500,3000),              
                   "max_depth": [ 5,10,20,30,50,100,None],
                   "min_samples_split": sp_randint(2,20),
-                  "max_features": ["auto","sqrt","log2",None], 
+                  "max_features": ["auto","sqrt","log2"], 
                   "criterion": ["gini", "entropy"],
                   "min_samples_leaf": [5,10,20,30,40,50]}
     njobs = -1
