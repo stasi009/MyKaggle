@@ -4,47 +4,63 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 import xgboost as xgb
-from sklearn.cross_validation import train_test_split
+from sklearn.cross_validation import StratifiedKFold
+from sklearn.metrics import log_loss
 import commfuncs
-
-seed = 999
 
 # load train datas
 trainData = commfuncs.RawTrainData("raw_datas/train.csv")
+labels = trainData.unique_labels()
 
-# text labels 
-txt_labels = trainData.labelencoder.inverse_transform(np.unique(trainData.ytrain))
+def experiment(param):
+    # ------------------- prepare parameters
+    param['objective'] = 'multi:softprob'# output probabilities
+    param['eval_metric'] = 'mlogloss'
+    param['nthread'] = 4
+    param['silent'] = 1
+    param['num_class'] = trainData.unique_labels().size
+    num_rounds = param["num_rounds"]
+    early_stopping_rounds=param["early_stop_rounds"]
+    num_cv = param["num_cv"]
+    
+    # ------------------- begin cross-validation
+    logloss = 0.0
+    folds_predicts = []
 
-# split into train set and validation set
-xtrain,xvalidate,ytrain,yvalidate = train_test_split(trainData.Xtrain,trainData.ytrain,test_size=0.3,random_state=seed)
-xg_train = xgb.DMatrix( xtrain, label=ytrain)
-xg_validate = xgb.DMatrix(xvalidate,yvalidate)
+    kfolds = StratifiedKFold(y=trainData.ytrain,n_folds=num_cv)
+    for k,(train_indices, validate_indices) in enumerate(kfolds):
+        print "************** %d-th fold **************"%(k+1)
 
-# setup parameters for xgboost
+        # prepare the data
+        xg_train = xgb.DMatrix( trainData.Xtrain.iloc[train_indices,:], label=trainData.ytrain[train_indices])
+        fold_xvalidate = trainData.Xtrain.iloc[validate_indices,:]
+        fold_yvalidate = trainData.ytrain[validate_indices]
+        xg_validate = xgb.DMatrix(fold_xvalidate,fold_yvalidate)
+        
+        # train
+        watchlist = [ (xg_train,'train'), (xg_validate, 'validate') ]
+        bst = xgb.train(param, xg_train, num_rounds, watchlist,early_stopping_rounds=early_stopping_rounds)
+
+        logloss += bst.best_score
+        print "best_iteration: %d"%( bst.best_iteration)
+        print "best score: %3.2f"%(bst.best_score)
+
+        # predict on validation set
+        predict_on_validate = bst.predict(xg_validate,ntree_limit=bst.best_iteration)
+        print "logloss re-calculated: %3.2f"%( log_loss(fold_yvalidate, predict_on_validate) )
+
+        predict_on_validate = pd.DataFrame(predict_on_validate,index = fold_xvalidate.index, columns = labels)
+        folds_predicts.append(predict_on_validate)
+
+    return (logloss/num_cv),(pd.concat(folds_predicts))
+
 param = {}
-param['objective'] = 'multi:softprob'# output probabilities
-param['eval_metric'] = 'mlogloss'
 param['max_depth'] = 6
-param['nthread'] = 4
-param['silent'] = 1
-param['seed'] = seed
-param['num_class'] = trainData.unique_labels().size
-
-watchlist = [ (xg_train,'train'), (xg_validate, 'validate') ]
-num_round = 500
-
-bst = xgb.train(param, xg_train, num_round, watchlist,early_stopping_rounds=10 )
-bst.best_iteration
-
-# predict on test data
-testdata = pd.read_csv("raw_datas/test.csv",index_col = "id")
-xg_test = xgb.DMatrix(testdata)
-
-prediction = bst.predict(xg_test,ntree_limit=bst.best_iteration)
-prediction = pd.DataFrame(prediction,index = testdata.index, columns = txt_labels)
-
-# save prediction into file
-prediction.to_csv("gbdt1.csv",index_label="id")
+param["num_rounds"] = 500
+param["early_stop_rounds"] = 20
+param["num_cv"] = 5
+logloss,cv_predict_probs = experiment(param)
 
 
-xgb.cv(param,xg_train)
+
+
