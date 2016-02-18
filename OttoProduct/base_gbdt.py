@@ -26,8 +26,18 @@ class Predictor(object):
         param['num_class'] = trainData.unique_labels().size
         self.param = param
 
-        self.folds_logloss = []
+        self.folds_train_loss = []
+        self.folds_val_loss = []
         self.folds_best_iterations = []
+
+    def _fold_predict(self,bst,dmatrix,loglosses):
+        predicts = bst.predict(dmatrix,ntree_limit=bst.best_iteration)
+        logloss = log_loss(dmatrix.get_label(), predicts)
+        loglosses.append(logloss)
+        return logloss,predicts
+
+    def _summarize_logloss(self,prefix,loglosses):
+        print "\n%s logloss: %s \nmean=%3.2f, STD=%3.2f" % (prefix,loglosses,np.mean(loglosses),np.std(loglosses))
 
     def cv_train(self):
         num_rounds = self.param["num_rounds"]
@@ -51,20 +61,20 @@ class Predictor(object):
             watchlist = [(xg_train,'train'), (xg_validate, 'validate')]# early stop will check on the last dataset
             bst = xgb.train(self.param, xg_train, num_rounds, watchlist,early_stopping_rounds=early_stopping_rounds)
 
-            self.folds_logloss.append(bst.best_score)
             print "best score: %3.2f" % (bst.best_score)
             self.folds_best_iterations.append(bst.best_iteration)
             print "best_iteration: %d" % (bst.best_iteration)
 
+            # predict on train set
+            self._fold_predict(bst,xg_train,self.folds_train_loss)
+
             # predict on validation set
-            predict_on_validate = bst.predict(xg_validate,ntree_limit=bst.best_iteration)
-            fold_logloss = log_loss(fold_yvalidate, predict_on_validate)
-            print "logloss re-calculated: %3.2f" % fold_logloss
-            if abs(fold_logloss - bst.best_score) > 1e-3: 
+            val_loss,predict_on_validate = self._fold_predict(bst,xg_validate,self.folds_val_loss)
+            print "logloss re-calculated: %3.2f" % val_loss
+            if abs(val_loss - bst.best_score) > 1e-3: 
                 raise Exception("my logloss not equal with xgboost's logloss")
 
-            predict_on_validate = pd.DataFrame(predict_on_validate,index = fold_xvalidate.index, columns = labels)
-            folds_predicts.append(predict_on_validate)
+            folds_predicts.append(pd.DataFrame(predict_on_validate,index = fold_xvalidate.index, columns = labels))
 
         # ------------------- summary
         self.cv_predict_probs = pd.concat(folds_predicts)
@@ -72,7 +82,8 @@ class Predictor(object):
         print "\n******************** TRAIN COMPLETED ********************"
         print "\nParameters: %s" % (self.param)
         print "\nfolds best iterations: %s, \nmean=%3.2f, median=%d, STD=%3.2f" % (self.folds_best_iterations,np.mean(self.folds_best_iterations),np.median(self.folds_best_iterations),np.std(self.folds_best_iterations))
-        print "\nfolds logloss: %s \nmean=%3.2f, STD=%3.2f" % (self.folds_logloss,np.mean(self.folds_logloss),np.std(self.folds_logloss))
+        self._summarize_logloss("train",self.folds_train_loss)
+        self._summarize_logloss("validate",self.folds_val_loss)
 
     def refit_save_model(self,num_rounds, modelname):
         # -------------------- refit on entire train dataset
@@ -96,11 +107,11 @@ class Predictor(object):
 file_offset = 1
 
 param = {}
-param['max_depth'] = 10
+param['max_depth'] = 6
 param["num_rounds"] = 500
 param["early_stop_rounds"] = 20
 param["num_cv"] = 5
-param["seed"] = 9
+# param["seed"] = 9
 
 predictor = Predictor(param)
 predictor.cv_train()
