@@ -17,7 +17,9 @@ class RawTrainData(object):
         self.ytrain = self.labelencoder.fit_transform(self.labels)
 
     def unique_labels(self):
-        return self.labels.unique()
+        # instead of calling self.labels.unique()
+        # by calling like below, we make sure the unique_labels are sorted
+        return self.labelencoder.inverse_transform(np.unique(self.ytrain))
 
     def boolindex_by_label(self,label):
         return np.asarray(self.labels == label)
