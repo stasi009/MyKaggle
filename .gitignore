@@ -161,3 +161,4 @@ $RECYCLE.BIN/
 /OttoProduct/raw_datas/test.csv
 /OttoProduct/raw_datas/test.csv.zip
 *.dmatrix
+*.csv
