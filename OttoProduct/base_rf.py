@@ -48,7 +48,7 @@ def train(seed):
     # ------------------------ preparing for stack generalization in next step
     logloss,cv_predicted_probs = commfuncs.cv_predict(searchcv.best_estimator_,tag,trainData,num_cv,seed)
 
-    cv_predicted_probs.to_csv("meta_features/%s.csv"%tag,index_labels="index")
+    cv_predicted_probs.to_csv("meta_features/%s.csv"%tag,index_labels="id")
     print "cv logloss is: %3.2f"%(logloss)
 
 if __name__ == "__main__":
