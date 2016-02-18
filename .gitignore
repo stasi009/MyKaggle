@@ -162,3 +162,4 @@ $RECYCLE.BIN/
 /OttoProduct/raw_datas/test.csv.zip
 *.dmatrix
 *.csv
+*.xgb

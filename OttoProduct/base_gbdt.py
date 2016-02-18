@@ -109,10 +109,10 @@ file_offset = 1
 
 param = {}
 param['max_depth'] = 6
-param['eta'] = 0.3
+param['eta'] = 0.1
 param["num_rounds"] = 1000
-param["subsample"] = 1
-param["colsample_bytree"] = 1
+param["subsample"] = 0.75
+param["colsample_bytree"] = 0.75
 param["early_stop_rounds"] = 15
 param["num_cv"] = 5
 # param["seed"] = 9
@@ -122,7 +122,7 @@ predictor.cv_train()
 
 file_offset += 1
 predictor.save_meta_features("xgb_cv%d.csv"%file_offset)
-predictor.refit_save_model(153,"xgboost%d.xgb"%file_offset)
+predictor.refit_save_model(417,"xgboost%d.xgb"%file_offset)
 predictor.predict_on_test("xgb_predict%d.csv"%file_offset)
 
 
