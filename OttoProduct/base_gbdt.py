@@ -37,7 +37,8 @@ class Predictor(object):
         return logloss,predicts
 
     def _summarize_logloss(self,prefix,loglosses):
-        print "\n%s logloss: %s \nmean=%3.2f, STD=%3.2f" % (prefix,loglosses,np.mean(loglosses),np.std(loglosses))
+        txt_losses = ",".join(("%3.2f"%e for e in loglosses))
+        print "\n%s logloss: [%s] \nmean=%3.2f, STD=%3.2f" % (prefix,txt_losses,np.mean(loglosses),np.std(loglosses))
 
     def cv_train(self):
         num_rounds = self.param["num_rounds"]
@@ -108,8 +109,11 @@ file_offset = 1
 
 param = {}
 param['max_depth'] = 6
-param["num_rounds"] = 500
-param["early_stop_rounds"] = 20
+param['eta'] = 0.3
+param["num_rounds"] = 1000
+param["subsample"] = 1
+param["colsample_bytree"] = 1
+param["early_stop_rounds"] = 15
 param["num_cv"] = 5
 # param["seed"] = 9
 
