@@ -163,3 +163,13 @@ $RECYCLE.BIN/
 *.dmatrix
 *.csv
 *.xgb
+
+.idea/misc.xml
+
+.idea/modules.xml
+
+.idea/MyKaggle.iml
+
+.idea/vcs.xml
+
+.idea/workspace.xml
