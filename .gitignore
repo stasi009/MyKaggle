@@ -173,3 +173,17 @@ $RECYCLE.BIN/
 .idea/vcs.xml
 
 .idea/workspace.xml
+
+BagWordsMeetsPopcorn/datas/labeledTrainData.tsv
+
+BagWordsMeetsPopcorn/datas/testData.tsv
+
+BagWordsMeetsPopcorn/datas/testData.tsv.zip
+
+BagWordsMeetsPopcorn/datas/labeledTrainData.tsv.zip
+
+BagWordsMeetsPopcorn/description.txt
+
+BagWordsMeetsPopcorn/datas/unlabeledTrainData.tsv.zip
+
+BagWordsMeetsPopcorn/datas/unlabeledTrainData.tsv
