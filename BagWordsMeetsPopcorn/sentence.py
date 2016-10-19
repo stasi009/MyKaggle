@@ -1,7 +1,5 @@
 
 import re
-import json
-from collections import Counter
 
 import nltk
 import common
@@ -18,15 +16,9 @@ ReplacePatterns = [
                     (r'(\w+)\'s', '\g<1> is'),
                     (r'(\w+)\'re', '\g<1> are'),
                     (r'(\w+)\'d', '\g<1> would'),
-                    (r'1st','first'),
-                    (r'2nd','second'),
-                    (r'3rd','third'),
                     ]
 
 class Sentence(object):
-    """
-    data structure which represents a sentence during the process of 'aspect segmentation'
-    """
     ReplacePatterns = [(re.compile(regex,re.IGNORECASE),replacewith)  for regex,replacewith in ReplacePatterns]
     Lemmatizer = nltk.WordNetLemmatizer()
     NegationSuffixer = NegationSuffixAdder()
