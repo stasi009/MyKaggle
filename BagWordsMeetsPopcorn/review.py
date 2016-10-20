@@ -9,7 +9,7 @@ class Review(object):
 
     def __init__(self,id = None,text = None,is_positive=None):
         self.id = id
-        self.sent = None if text is None else Sentence.from_raw(text,Review.StopWords)
+        self.sent = None if text is None else Sentence.from_raw(text,Review.StopWords,neg_mark=True)
         if self.sent is not None:
             self.sent.sentiment = is_positive
 

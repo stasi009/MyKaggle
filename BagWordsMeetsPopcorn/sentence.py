@@ -19,7 +19,7 @@ class Sentence(object):
         return [text_utility.remove_neg_suffix(w) for w in self.words]
 
     @staticmethod
-    def from_raw(text, stop_words,neg_mark = False):
+    def from_raw(text, stop_words,neg_mark = True):
         if not ( isinstance(stop_words,set) or isinstance(stop_words,frozenset) ):
             raise TypeError("stop_words pass in must be set or frozenset")
 
