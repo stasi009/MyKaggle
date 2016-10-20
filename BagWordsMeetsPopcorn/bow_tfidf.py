@@ -5,20 +5,23 @@ import logging
 from gensim import corpora,models
 from review import Review,ReviewsDAL
 
-def words_stream():
+def words_stream(colname):
     dal = ReviewsDAL()
-    train_review_stream = dal.load_words("train")
-    unlabled_review_stream = dal.load_words("unlabeled")
+    review_stream = dal.load_words(colname)
 
-    for index,r in enumerate( itertools.chain(train_review_stream,unlabled_review_stream) ):
+    for index,r in enumerate( review_stream  ):
         yield r.sent.words
         if index % 300 == 0:
-            print "{} examples loaded from mongodb".format(index+1)
+            print "{} examples loaded from mongodb[{}]".format(index+1,colname)
 
     dal.close()
 
 def build_dictionary():
-    dictionary = corpora.Dictionary(words_stream())
+    train_words_stream = words_stream('train')
+    unlabeled_words_stream = words_stream('unlabled')
+    wstream = itertools.chain(train_words_stream, unlabeled_words_stream)
+
+    dictionary = corpora.Dictionary(wstream)
     dictionary.save('processed/dictionary.dict')  # store the dictionary, for future reference
     print "======== Dictionary Generated and Saved ========"
 
@@ -51,8 +54,25 @@ def clean_dict_save():
 
     print "dictionary is cleaned, shrinked and saved"
 
+def build_bow_save():
+    dictionary = corpora.Dictionary.load('processed/dictionary.dict')
+
+    colnames = ['train','test','validate','unlabeled']
+    for colname in colnames:
+        print "\n=========== collection[{}] to BOW, ......".format(colname)
+
+        bow_stream = (dictionary.doc2bow(words) for words in words_stream(colname))
+        target_file = "processed/{}.bow".format(colname)
+        corpora.MmCorpus.serialize(target_file, bow_stream)
+
+        print "=========== BOW[{}] saved ===========".format(colname)
+
+    print "!!! DONE !!!"
+
+
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
     # build_dictionary()
     # clean_dict_save()
+    build_bow_save()
