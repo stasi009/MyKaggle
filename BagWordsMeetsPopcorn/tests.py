@@ -1,5 +1,6 @@
 
 import nltk
+from pymongo import MongoClient
 from sentence import Sentence
 from review import Review,ReviewsDAL
 import text_utility
@@ -33,7 +34,7 @@ def test_review():
     cpyr = Review.from_dict(d)
     print cpyr.to_dict()
 
-def test_load_reviews():
+def test_load_review_words():
     dal = ReviewsDAL()
     r_stream = dal.load_reviews_words("unlabeled")
 
@@ -44,4 +45,15 @@ def test_load_reviews():
         print "words: {}".format(review.sent.words)
 
     dal.close()
+
+def test_load_review_raw():
+    client = MongoClient()
+    collection = client['popcorn']['unlabeled']
+
+    cursor = collection.find({},{'text':1})
+    for index in xrange(10):
+        d = next(cursor)
+        print d['text']+"\n"
+
+    client.close()
 
