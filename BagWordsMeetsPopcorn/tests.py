@@ -57,3 +57,7 @@ def test_load_review_raw():
 
     client.close()
 
+def test_load_ids():
+    dal = ReviewsDAL()
+    ids = dal.load_ids("train")
+

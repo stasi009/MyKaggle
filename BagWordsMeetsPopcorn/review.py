@@ -32,7 +32,7 @@ class ReviewsDAL(object):
 
     def __init__(self,dbname = 'popcorn'):
         self._client = MongoClient()
-        self.db = self._client[dbname]
+        self._db = self._client[dbname]
 
     def close(self):
         self._client.close()
@@ -40,11 +40,26 @@ class ReviewsDAL(object):
     def insert_many(self,colname,reviews):
         # cannot be iterator, but an non-empty list
         if len(reviews)>0:
-            review_collection = self.db[colname]
+            review_collection = self._db[colname]
             review_collection.insert_many([r.to_dict() for r in reviews])
 
-    def load_reviews_words(self,colname):
+    def load_one(self,colname,id):
+        cursor = self._db[colname].find({'_id':id})
+        d = list(cursor)
+        assert len(d)==1,'id must be unique'
+        return Review.from_dict(d[0])
+
+    def load_ids(self,colname):
         # exclude id and raw text
-        cursor = self.db[colname].find({},{'_id':0,'text':0})
+        cursor = self._db[colname].find({}, {'_id':1})
+        for d in cursor:
+            yield d["_id"]
+
+    def load_words(self,colname):
+        """
+        load reviews with just words
+        """
+        # exclude id and raw text
+        cursor = self._db[colname].find({}, {'_id':0, 'text':0})
         for d in cursor:
             yield Review.from_dict(d)
