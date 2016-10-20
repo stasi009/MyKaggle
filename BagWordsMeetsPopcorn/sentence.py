@@ -1,60 +1,41 @@
 
 import re
-
 import nltk
-import common
-from negation_suffix import NegationSuffixAdder
-
-ReplacePatterns = [
-                    (r'won\'t', 'will not'),
-                    (r'can\'t', 'cannot'),
-                    (r'i\'m', 'i am'),
-                    (r'ain\'t', 'is not'),
-                    (r'(\w+)\'ll', '\g<1> will'),
-                    (r'(\w+)n\'t', '\g<1> not'),
-                    (r'(\w+)\'ve', '\g<1> have'),
-                    (r'(\w+)\'s', '\g<1> is'),
-                    (r'(\w+)\'re', '\g<1> are'),
-                    (r'(\w+)\'d', '\g<1> would'),
-                    ]
+import text_utility
 
 class Sentence(object):
-    ReplacePatterns = [(re.compile(regex,re.IGNORECASE),replacewith)  for regex,replacewith in ReplacePatterns]
     Lemmatizer = nltk.WordNetLemmatizer()
-    NegationSuffixer = NegationSuffixAdder()
-    NegSuffixPattern = re.compile(r"{}$".format(common.NEG_SUFFIX))
 
-    def __init__(self,raw = None,words = None, aspect=common.AspectUnknown, sentiment=common.SentimentUnknown):
+    def __init__(self,raw = None,words = None,aspect = None,sentiment = None):
         self.raw = raw
         self.words = words
-        self.aspect = common.AspectUnknown if aspect is None else aspect
-        self.sentiment = common.SentimentUnknown if sentiment is None else sentiment
+        self.aspect = aspect
+        self.sentiment = sentiment
 
     def to_dict(self):
         return {"raw":self.raw,"words":self.words,"aspect":self.aspect,"sentiment":self.sentiment}
 
     def words_no_negsuffix(self):
-        return [Sentence.NegSuffixPattern.sub('',w) for w in self.words]
+        return [text_utility.remove_neg_suffix(w) for w in self.words]
 
     @staticmethod
-    def from_raw(sentence,stop_words):
+    def from_raw(text, stop_words,neg_mark = False):
         if not ( isinstance(stop_words,set) or isinstance(stop_words,frozenset) ):
             raise TypeError("stop_words pass in must be set or frozenset")
 
-        sent = Sentence(sentence)
+        sent = Sentence(text)
 
         ############### expand contraction and abbrevations
-        for (pattern, replacewith) in Sentence.ReplacePatterns:
-            sentence = re.sub(pattern, replacewith, sentence)
+        text = text_utility.replace(text)
 
         ############### remove numbers, but need to keep punctuations, which is required in negation marking
-        sentence = re.sub(r"[0-9\\\/\-\(\)]", " ", sentence)
+        text = re.sub(r"[0-9\\\/\-\(\)]", " ", text)
 
         ############### normalize to lower case
-        sentence = sentence.lower()
+        text = text.lower()
 
         ############### tokenize into words
-        words = nltk.word_tokenize( sentence )
+        words = nltk.word_tokenize(text)
 
         ############### lemmatize
         # !!! Notice the order is important
@@ -63,10 +44,11 @@ class Sentence(object):
         # !!! however, if we remove stopwords first, given ["parking","crazy"],
         # !!! nltk.pos_tag will think "parking" as Verb
         # !!! and lemmatize return "park"
-        words = common.lemmatize_with_pos(Sentence.Lemmatizer,words)
+        words = text_utility.lemmatize_with_pos(Sentence.Lemmatizer,words)
 
         ############### add negation suffix
-        words = Sentence.NegationSuffixer.add_negation_suffixes(words)
+        if neg_mark:
+            words = text_utility.add_negation_suffixes(words)
 
         ############### remove stopwords
         # condition "len(w)>1" will remove punctuations
@@ -78,5 +60,4 @@ class Sentence(object):
 
     @staticmethod
     def from_dict(d):
-        return Sentence(d.get("raw",None),d.get("words",None),\
-        d.get("aspect",common.AspectUnknown),d.get("sentiment",common.SentimentUnknown))
+        return Sentence(d.get("raw",None),d.get("words",None),d.get("aspect",None),d.get("sentiment",None))
