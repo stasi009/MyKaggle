@@ -132,11 +132,12 @@ def load_tfidf(colname):
     corpus = corpora.MmCorpus('bow/{}.tfidf'.format(colname))
     # with documents as columns
     X = matutils.corpus2csc(corpus,printprogress=1)
-
     # transpose to make each document a row
     X = X.T
 
-    y = pd.read_csv("bow/{}_meta.csv",index_col='id')
+    y = pd.read_csv("bow/{}_meta.csv".format(colname),index_col='id')
+    y = y.iloc[:,0]# DataFrame to Series
+
     return X,y
 
 if __name__ == "__main__":
