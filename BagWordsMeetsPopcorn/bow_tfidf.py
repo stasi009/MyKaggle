@@ -18,7 +18,7 @@ def words_stream(colname):
 
 def build_dictionary():
     train_words_stream = words_stream('train')
-    unlabeled_words_stream = words_stream('unlabled')
+    unlabeled_words_stream = words_stream('unlabeled')
     wstream = itertools.chain(train_words_stream, unlabeled_words_stream)
 
     dictionary = corpora.Dictionary(wstream)
@@ -35,7 +35,7 @@ def clean_dictionary(no_below=5, no_above=0.5, keep_n=100000):
     print "after filtering too often/rare, there are {} tokens".format(len(dictionary))
 
     # filter out words with non-characters
-    invalid_pattern = re.compile(r"[^a-zA-Z]")
+    invalid_pattern = re.compile(r"[^a-zA-Z_]")
     invalid_tokenids = [id for token,id in dictionary.token2id.viewitems() if invalid_pattern.search(token) is not None]
     print "there are {} tokens containing non-character".format(len(invalid_tokenids))
 
@@ -73,6 +73,6 @@ def build_bow_save():
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-    # build_dictionary()
+    build_dictionary()
     # clean_dict_save()
-    build_bow_save()
+    # build_bow_save()

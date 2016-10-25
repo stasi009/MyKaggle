@@ -2,13 +2,9 @@
 """
 perform some Explory Data Analysis (EDA) in this script
 """
-import re
-import numpy as np
-import pandas as pd
 from pymongo import MongoClient
-from gensim import corpora
-from review import ReviewsDAL
 import bow_tfidf
+from review import ReviewsDAL
 
 def check_examples():
     dal = ReviewsDAL()
