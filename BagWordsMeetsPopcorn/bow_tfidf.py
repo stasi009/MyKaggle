@@ -2,6 +2,7 @@
 import re
 import itertools
 import logging
+import text_utility
 from gensim import corpora,models
 from review import Review,ReviewsDAL
 
@@ -25,30 +26,50 @@ def build_dictionary():
     dictionary.save('processed/dictionary.dict')  # store the dictionary, for future reference
     print "======== Dictionary Generated and Saved ========"
 
-def clean_dictionary(no_below=5, no_above=0.5, keep_n=100000):
-    dictfile = 'processed/dictionary.dict'
-    dictionary = corpora.Dictionary.load(dictfile)
-    print "originally, there are {} tokens".format(len(dictionary))
+class DictCleaner(object):
 
-    # filter out too often/rare
-    dictionary.filter_extremes(no_below=no_below,no_above=no_above,keep_n=keep_n)
-    print "after filtering too often/rare, there are {} tokens".format(len(dictionary))
+    def __init__(self):
 
-    # filter out words with non-characters
-    invalid_pattern = re.compile(r"[^a-zA-Z_]")
-    invalid_tokenids = [id for token,id in dictionary.token2id.viewitems() if invalid_pattern.search(token) is not None]
-    print "there are {} tokens containing non-character".format(len(invalid_tokenids))
+        self._invalid_pattern = re.compile(r"[^a-zA-Z_]")
 
-    dictionary.filter_tokens(bad_ids = invalid_tokenids)
-    print "after filtering non-character, there are {} tokens".format(len(dictionary))
+        self._extra_stop_words = set()
+        # for a dataset containing movie reviews, 'movie' and 'film' are too frequent
+        for w in ['movie', 'film']:
+            self._extra_stop_words.add(w)
+            self._extra_stop_words.add(w + text_utility.NEG_SUFFIX)
 
-    return dictionary
+    def is_token_invalid(self,token):
+        if self._invalid_pattern.search(token) is not None:
+            return True
+
+        if token in self._extra_stop_words:
+            return True
+
+        return False
+
+    def clean(self,no_below=5, no_above=0.5, keep_n=100000):
+        dictionary = corpora.Dictionary.load('processed/dictionary.dict')
+        print "originally, there are {} tokens".format(len(dictionary))
+
+        # filter out too often/rare
+        dictionary.filter_extremes(no_below=no_below,no_above=no_above,keep_n=keep_n)
+        print "after filtering too often/rare, there are {} tokens".format(len(dictionary))
+
+        # filter out invalid tokens
+        invalid_tokenids = [id for token,id in dictionary.token2id.viewitems()
+                            if self.is_token_invalid(token) ]
+        print "there are {} tokens are invalid".format(len(invalid_tokenids))
+
+        dictionary.filter_tokens(bad_ids = invalid_tokenids)
+        print "after filtering invalid, there are {} tokens".format(len(dictionary))
+
+        return dictionary
 
 def clean_dict_save():
-    clean_dict = clean_dictionary(no_below=10,no_above=0.8,keep_n=15000)
+    cleaner = DictCleaner()
+    clean_dict = cleaner.clean(no_below=10,no_above=0.8,keep_n=15000)
 
     clean_dict.save('processed/dictionary.dict')
-
     # sort by decreasing doc-frequency
     clean_dict.save_as_text("processed/dictionary.txt", sort_by_word=False)
 
@@ -69,10 +90,37 @@ def build_bow_save():
 
     print "!!! DONE !!!"
 
+def build_tfidf_save():
+    dictionary = corpora.Dictionary.load("processed/dictionary.dict")
+
+    train_bow = corpora.MmCorpus('processed/train.bow')
+    unlabeled_bow = corpora.MmCorpus('processed/unlabeled.bow')
+    corpus = itertools.chain(train_bow,unlabeled_bow)
+
+    model = models.TfidfModel(corpus=corpus, id2word=dictionary,dictionary=dictionary, normalize=True)
+    model.save("processed/popcorn.tfidf_model")
+    print 'TF-IDF model generated and saved.'
+
+    colnames = ['train', 'test', 'validate', 'unlabeled']
+    for colname in colnames:
+        print "\n=========== BOW[{}] to TF-IDF, ......".format(colname)
+
+        bow_stream = corpora.MmCorpus('processed/{}.bow'.format(colname))
+        tfidf_stream = model[bow_stream]
+
+        targetfile = 'processed/{}.tfidf'.format(colname)
+        corpora.MmCorpus.serialize(targetfile, tfidf_stream)
+
+        print "=========== TF-IDF[{}] saved ===========".format(colname)
+
+    print "!!! DONE !!!"
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-    build_dictionary()
+    raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
+
+    # build_dictionary()
     # clean_dict_save()
     # build_bow_save()
+    # build_tfidf_save()

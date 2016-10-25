@@ -24,24 +24,26 @@ def print_topic_distribution(model,filename):
         for index,(w,c) in enumerate( fdist.most_common(100) ):
             outf.write("{}-th keyword: <{},{}>\n".format(index+1,w,c))
 
-def lda(bow_stream,n_topics,tag):
+
+def run_lda_with_train_unlabeled(n_topics):
     dictionary = corpora.Dictionary.load("processed/dictionary.dict")
+    train_bow = corpora.MmCorpus('processed/train.bow')
+    unlabeled_bow = corpora.MmCorpus('processed/unlabeled.bow')
 
-    model = models.LdaModel(bow_stream, id2word=dictionary, num_topics=n_topics)
-    print "================= LDA MODEL IS BUILT ================="
+    # model = models.LdaMulticore(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
+    model = models.LdaModel(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
+    print "======== LDA built on train set ========"
 
+    model.update(unlabeled_bow)
+    print "======== LDA updated on unlabeled set ========"
+
+    # --------------- save result
+    tag = 'popcorn'
     model_name = os.path.join("processed",tag+".lda")
     model.save(model_name)
 
     topic_name = os.path.join("processed",tag+"_topics.txt")
     print_topic_distribution(model,topic_name)
-
-def run_lda_with_train_unlabeled(n_topics):
-    train_bow = corpora.MmCorpus('processed/train.bow')
-    unlabeled_bow = corpora.MmCorpus('processed/unlabeled.bow')
-    all_bow = itertools.chain(train_bow,unlabeled_bow)
-
-    lda(unlabeled_bow,n_topics,'popcorn')
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
