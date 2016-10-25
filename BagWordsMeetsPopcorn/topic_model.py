@@ -26,9 +26,9 @@ def print_topic_distribution(model,filename):
 
 
 def run_lda_with_train_unlabeled(n_topics):
-    dictionary = corpora.Dictionary.load("processed/dictionary.dict")
-    train_bow = corpora.MmCorpus('processed/train.bow')
-    unlabeled_bow = corpora.MmCorpus('processed/unlabeled.bow')
+    dictionary = corpora.Dictionary.load("bow/dictionary.dict")
+    train_bow = corpora.MmCorpus('bow/train.bow')
+    unlabeled_bow = corpora.MmCorpus('bow/unlabeled.bow')
 
     # model = models.LdaMulticore(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
     model = models.LdaModel(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
@@ -39,10 +39,10 @@ def run_lda_with_train_unlabeled(n_topics):
 
     # --------------- save result
     tag = 'popcorn'
-    model_name = os.path.join("processed",tag+".lda")
+    model_name = os.path.join("meta_features",tag+".lda")
     model.save(model_name)
 
-    topic_name = os.path.join("processed",tag+"_topics.txt")
+    topic_name = os.path.join("meta_features",tag+"_topics.txt")
     print_topic_distribution(model,topic_name)
 
 if __name__ == "__main__":
