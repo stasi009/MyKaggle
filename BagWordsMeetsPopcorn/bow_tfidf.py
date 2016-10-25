@@ -27,7 +27,7 @@ class DataLoader(object):
         dal.close()
 
     def save_meta(self):
-        targetfile = 'processed/{}_meta.csv'.format(self._colname)
+        targetfile = 'bow/{}_meta.csv'.format(self._colname)
         with open(targetfile,'wt') as outf:
             outf.write("id,sentiment\n")
             for meta in self._metas:
@@ -40,7 +40,7 @@ def build_dictionary():
     wstream = itertools.chain(train_words_stream, unlabeled_words_stream)
 
     dictionary = corpora.Dictionary(wstream)
-    dictionary.save('processed/dictionary.dict')  # store the dictionary, for future reference
+    dictionary.save('bow/dictionary.dict')  # store the dictionary, for future reference
     print "======== Dictionary Generated and Saved ========"
 
 class DictCleaner(object):
@@ -64,7 +64,7 @@ class DictCleaner(object):
         return False
 
     def clean(self,no_below=5, no_above=0.5, keep_n=100000):
-        dictionary = corpora.Dictionary.load('processed/dictionary.dict')
+        dictionary = corpora.Dictionary.load('bow/dictionary.dict')
         print "originally, there are {} tokens".format(len(dictionary))
 
         # filter out too often/rare
@@ -85,14 +85,14 @@ def clean_dict_save():
     cleaner = DictCleaner()
     clean_dict = cleaner.clean(no_below=10,no_above=0.8,keep_n=15000)
 
-    clean_dict.save('processed/dictionary.dict')
+    clean_dict.save('bow/dictionary.dict')
     # sort by decreasing doc-frequency
-    clean_dict.save_as_text("processed/dictionary.txt", sort_by_word=False)
+    clean_dict.save_as_text("bow/dictionary.txt", sort_by_word=False)
 
     print "dictionary is cleaned, shrinked and saved"
 
 def build_bow_save():
-    dictionary = corpora.Dictionary.load('processed/dictionary.dict')
+    dictionary = corpora.Dictionary.load('bow/dictionary.dict')
 
     colnames = ['train','test','validate','unlabeled']
     for colname in colnames:
@@ -101,7 +101,7 @@ def build_bow_save():
         loader = DataLoader(colname)
         bow_stream = (dictionary.doc2bow(words) for words in loader.words_stream())
 
-        target_file = "processed/{}.bow".format(colname)
+        target_file = "bow/{}.bow".format(colname)
         corpora.MmCorpus.serialize(target_file, bow_stream)
         loader.save_meta()
 
@@ -110,18 +110,18 @@ def build_bow_save():
     print "!!! DONE !!!"
 
 def build_tfidf_save():
-    dictionary = corpora.Dictionary.load("processed/dictionary.dict")
+    dictionary = corpora.Dictionary.load("bow/dictionary.dict")
     model = models.TfidfModel( id2word=dictionary,dictionary=dictionary, normalize=True)
-    model.save("processed/popcorn.tfidf_model")
+    model.save("bow/popcorn.tfidf_model")
     print 'TF-IDF model generated and saved.'
 
     colnames = ['train', 'test', 'validate', 'unlabeled']
     for colname in colnames:
         print "\n=========== BOW[{}] to TF-IDF, ......".format(colname)
 
-        bow_stream = corpora.MmCorpus('processed/{}.bow'.format(colname))
+        bow_stream = corpora.MmCorpus('bow/{}.bow'.format(colname))
         tfidf_stream = model[bow_stream]
-        corpora.MmCorpus.serialize('processed/{}.tfidf'.format(colname), tfidf_stream)
+        corpora.MmCorpus.serialize('bow/{}.tfidf'.format(colname), tfidf_stream)
 
         print "=========== TF-IDF[{}] saved ===========".format(colname)
 
