@@ -193,4 +193,5 @@ BagWordsMeetsPopcorn/datas/mongodb
 BagWordsMeetsPopcorn/processed
 BagWordsMeetsPopcorn/processed/dictionary.txt
 
-BagWordsMeetsPopcorn/processed/dictionary.txt
+BagWordsMeetsPopcorn/processed/dictionary.dict
+
