@@ -3,7 +3,8 @@ import re
 import itertools
 import logging
 import text_utility
-from gensim import corpora,models
+import pandas as pd
+from gensim import corpora,models,matutils
 from review import Review,ReviewsDAL
 
 class DataLoader(object):
@@ -126,12 +127,24 @@ def build_tfidf_save():
 
     print "!!! DONE !!!"
 
+
+def load_tfidf(colname):
+    corpus = corpora.MmCorpus('bow/{}.tfidf'.format(colname))
+    # with documents as columns
+    X = matutils.corpus2csc(corpus,printprogress=1)
+
+    # transpose to make each document a row
+    X = X.T
+
+    y = pd.read_csv("bow/{}_meta.csv",index_col='id')
+    return X,y
+
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-    # raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
+    raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
 
     # build_dictionary()
     # clean_dict_save()
     # build_bow_save()
-    build_tfidf_save()
+    # build_tfidf_save()
