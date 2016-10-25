@@ -60,6 +60,6 @@ class ReviewsDAL(object):
         load reviews with just words
         """
         # exclude id and raw text
-        cursor = self._db[colname].find({}, {'_id':0, 'text':0})
+        cursor = self._db[colname].find({}, { 'text':0})
         for d in cursor:
             yield Review.from_dict(d)

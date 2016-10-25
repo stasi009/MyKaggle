@@ -6,20 +6,36 @@ import text_utility
 from gensim import corpora,models
 from review import Review,ReviewsDAL
 
-def words_stream(colname):
-    dal = ReviewsDAL()
-    review_stream = dal.load_words(colname)
+class DataLoader(object):
 
-    for index,r in enumerate( review_stream  ):
-        yield r.sent.words
-        if index % 300 == 0:
-            print "{} examples loaded from mongodb[{}]".format(index+1,colname)
+    def __init__(self,colname):
+        self._colname = colname
 
-    dal.close()
+    def words_stream(self):
+        self._metas = []
+
+        dal = ReviewsDAL()
+        review_stream = dal.load_words(self._colname)
+        for index, r in enumerate(review_stream):
+            self._metas.append((r.id, r.sent.sentiment))
+            yield r.sent.words
+
+            if index % 300 == 0:
+                print "{} examples loaded from mongodb[{}]".format(index + 1, self._colname)
+
+        dal.close()
+
+    def save_meta(self):
+        targetfile = 'processed/{}_meta.csv'.format(self._colname)
+        with open(targetfile,'wt') as outf:
+            outf.write("id,sentiment\n")
+            for meta in self._metas:
+                outf.write("{},{}\n".format(meta[0],meta[1]))
+
 
 def build_dictionary():
-    train_words_stream = words_stream('train')
-    unlabeled_words_stream = words_stream('unlabeled')
+    train_words_stream =  DataLoader('train').words_stream()
+    unlabeled_words_stream = DataLoader('unlabeled').words_stream()
     wstream = itertools.chain(train_words_stream, unlabeled_words_stream)
 
     dictionary = corpora.Dictionary(wstream)
@@ -27,7 +43,6 @@ def build_dictionary():
     print "======== Dictionary Generated and Saved ========"
 
 class DictCleaner(object):
-
     def __init__(self):
 
         self._invalid_pattern = re.compile(r"[^a-zA-Z_]")
@@ -82,9 +97,12 @@ def build_bow_save():
     for colname in colnames:
         print "\n=========== collection[{}] to BOW, ......".format(colname)
 
-        bow_stream = (dictionary.doc2bow(words) for words in words_stream(colname))
+        loader = DataLoader(colname)
+        bow_stream = (dictionary.doc2bow(words) for words in loader.words_stream())
+
         target_file = "processed/{}.bow".format(colname)
         corpora.MmCorpus.serialize(target_file, bow_stream)
+        loader.save_meta()
 
         print "=========== BOW[{}] saved ===========".format(colname)
 
@@ -92,12 +110,7 @@ def build_bow_save():
 
 def build_tfidf_save():
     dictionary = corpora.Dictionary.load("processed/dictionary.dict")
-
-    train_bow = corpora.MmCorpus('processed/train.bow')
-    unlabeled_bow = corpora.MmCorpus('processed/unlabeled.bow')
-    corpus = itertools.chain(train_bow,unlabeled_bow)
-
-    model = models.TfidfModel(corpus=corpus, id2word=dictionary,dictionary=dictionary, normalize=True)
+    model = models.TfidfModel( id2word=dictionary,dictionary=dictionary, normalize=True)
     model.save("processed/popcorn.tfidf_model")
     print 'TF-IDF model generated and saved.'
 
@@ -107,9 +120,7 @@ def build_tfidf_save():
 
         bow_stream = corpora.MmCorpus('processed/{}.bow'.format(colname))
         tfidf_stream = model[bow_stream]
-
-        targetfile = 'processed/{}.tfidf'.format(colname)
-        corpora.MmCorpus.serialize(targetfile, tfidf_stream)
+        corpora.MmCorpus.serialize('processed/{}.tfidf'.format(colname), tfidf_stream)
 
         print "=========== TF-IDF[{}] saved ===========".format(colname)
 
@@ -118,9 +129,9 @@ def build_tfidf_save():
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-    raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
+    # raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
 
     # build_dictionary()
     # clean_dict_save()
     # build_bow_save()
-    # build_tfidf_save()
+    build_tfidf_save()
