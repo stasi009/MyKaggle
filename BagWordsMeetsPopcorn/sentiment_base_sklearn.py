@@ -2,7 +2,6 @@
 import os.path
 import numpy as np
 import pandas as pd
-from gensim import corpora,matutils
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import  MultinomialNB
 from sklearn.svm import LinearSVC,SVC
