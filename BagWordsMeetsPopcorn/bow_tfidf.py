@@ -154,7 +154,6 @@ def load_dense_dataset(colname,suffix,nterms):
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
     raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing files.")
 
     # build_dictionary()
