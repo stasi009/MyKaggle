@@ -190,7 +190,5 @@ BagWordsMeetsPopcorn/datas/unlabeledTrainData.tsv
 
 BagWordsMeetsPopcorn/datas/mongodb
 
-BagWordsMeetsPopcorn/bow
-BagWordsMeetsPopcorn/bow/dictionary.txt
-BagWordsMeetsPopcorn/bow/dictionary.dict
+BagWordsMeetsPopcorn/vsm
 
