@@ -28,9 +28,9 @@ def print_topic_distribution(model,filename):
 
 
 def run_lda_with_train_unlabeled(n_topics):
-    dictionary = corpora.Dictionary.load("bow/dictionary.dict")
-    train_bow = corpora.MmCorpus('bow/train.bow')
-    unlabeled_bow = corpora.MmCorpus('bow/unlabeled.bow')
+    dictionary = corpora.Dictionary.load("vsm/dictionary.dict")
+    train_bow = corpora.MmCorpus('vsm/train.bow')
+    unlabeled_bow = corpora.MmCorpus('vsm/unlabeled.bow')
 
     # model = models.LdaMulticore(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
     model = models.LdaModel(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
@@ -41,36 +41,50 @@ def run_lda_with_train_unlabeled(n_topics):
 
     # --------------- save result
     tag = 'popcorn'
-    model_name = os.path.join("bow",tag+".lda")
+    model_name = os.path.join("vsm",tag+".lda_model")
     model.save(model_name)
 
-    topic_name = os.path.join("bow",tag+"_topics.txt")
+    topic_name = os.path.join("vsm",tag+"_topics.txt")
     print_topic_distribution(model,topic_name)
 
 class LsiReducer(object):
 
     def __init__(self):
-        self.dictionary = corpora.Dictionary.load('bow/dictionary.dict')
+        self.dictionary = corpora.Dictionary.load('vsm/dictionary.dict')
 
     def fit(self, n_topics):
-        train_corpus = corpora.MmCorpus('bow/train.tfidf')
+        train_corpus = corpora.MmCorpus('vsm/train.tfidf')
         self.model = models.LsiModel(train_corpus, id2word=self.dictionary, num_topics=n_topics)
-        print "fitted on train corpus"
+        print "====== fitted on train corpus ======"
 
-        unlabeled_corpus = corpora.MmCorpus('bow/validate.tfidf')
+        unlabeled_corpus = corpora.MmCorpus('vsm/unlabeled.tfidf')
         self.model.add_documents(unlabeled_corpus)
-        print 'updated by unlabeled corpus'
+        print '====== updated by unlabeled corpus ======'
 
-        self.model.save('bow/')
+        self.model.save('vsm/popcorn.lsi{}_model'.format(n_topics))
+        print "====== LSI{} model built and saved ======".format(n_topics)
 
     def reduce_save(self):
-        pass
+        # unlabeled dataset is huge and won't be used in classification, so ignore it
+        colnames = ['train','validate','test']
+        for colname in colnames:
+            tfidf_corpus = corpora.MmCorpus('vsm/{}.tfidf'.format(colname))
+            # cannot be called by model[tfidf_corpus,True]
+            lsi_corpus = self.model.__getitem__( tfidf_corpus,scaled=True)
+            corpora.MmCorpus.serialize('vsm/{}.lsi{}'.format(colname,self.model.num_topics), lsi_corpus)
+            print "====== TF-IDF[{}] reduced to {} dims ======".format(colname,self.model.num_topics)
 
+def lsi_reduce(n_topics):
+    r = LsiReducer()
+    r.fit(n_topics)
+    r.reduce_save()
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-    run_lda_with_train_unlabeled(50)
+    # run_lda_with_train_unlabeled(50)
+
+    lsi_reduce(1000)
 
 
 

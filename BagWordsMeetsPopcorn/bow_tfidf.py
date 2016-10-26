@@ -111,7 +111,7 @@ def build_bow_save():
 
 def build_tfidf_save():
     dictionary = corpora.Dictionary.load("vsm/dictionary.dict")
-    model = models.TfidfModel( id2word=dictionary,dictionary=dictionary, normalize=True)
+    model = models.TfidfModel(id2word=dictionary,dictionary=dictionary, normalize=True)
     model.save("vsm/popcorn.tfidf_model")
     print 'TF-IDF model generated and saved.'
 
@@ -127,9 +127,8 @@ def build_tfidf_save():
 
     print "!!! DONE !!!"
 
-
-def load_tfidf(colname):
-    corpus = corpora.MmCorpus('vsm/{}.tfidf'.format(colname))
+def load_sparse_dataset(colname,suffix):
+    corpus = corpora.MmCorpus('vsm/{}.{}'.format(colname,suffix))
     # with documents as columns
     X = matutils.corpus2csc(corpus,printprogress=1)
     # transpose to make each document a row
@@ -137,6 +136,19 @@ def load_tfidf(colname):
 
     y = pd.read_csv("vsm/{}_meta.csv".format(colname),index_col='id')
     y = y.iloc[:,0]# DataFrame to Series
+
+    return X,y
+
+def load_dense_dataset(colname,suffix,nterms):
+    y = pd.read_csv("vsm/{}_meta.csv".format(colname),index_col='id')
+    y = y.iloc[:,0]# DataFrame to Series
+    ndocs = y.shape[0]
+
+    corpus = corpora.MmCorpus('vsm/{}.{}'.format(colname,suffix))
+    # with documents as columns
+    X = matutils.corpus2dense(corpus,num_terms=nterms,num_docs=ndocs)
+    # transpose to make each document a row
+    X = X.T
 
     return X,y
 

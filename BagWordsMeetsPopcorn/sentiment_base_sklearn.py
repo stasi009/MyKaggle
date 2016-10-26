@@ -53,10 +53,10 @@ def crossval_predict(predictor, X, y, prefix, n_cv=5):
 
 class Learner(object):
     def __init__(self):
-        self.Xtrain, self.ytrain = bow_tfidf.load_tfidf("train")
+        self.Xtrain, self.ytrain = bow_tfidf.load_sparse_dataset("train",'tfidf')
         print "train set {}, positive ratio: {:.2f}%".format(self.Xtrain.shape, self.ytrain.mean() * 100)
 
-        self.Xvalid, self.yvalid = bow_tfidf.load_tfidf("validate")
+        self.Xvalid, self.yvalid = bow_tfidf.load_sparse_dataset("validate",'tfidf')
         print "validation set {}, positive ratio: {:.2f}%".format(self.Xvalid.shape, self.yvalid.mean() * 100)
 
         # ---------- prepare file to record statistics
