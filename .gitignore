@@ -161,7 +161,6 @@ $RECYCLE.BIN/
 /OttoProduct/raw_datas/test.csv
 /OttoProduct/raw_datas/test.csv.zip
 *.dmatrix
-*.csv
 *.xgb
 
 .idea/misc.xml
@@ -174,23 +173,10 @@ $RECYCLE.BIN/
 
 .idea/workspace.xml
 
-BagWordsMeetsPopcorn/datas/labeledTrainData.tsv
-
-BagWordsMeetsPopcorn/datas/testData.tsv
-
-BagWordsMeetsPopcorn/datas/testData.tsv.zip
-
-BagWordsMeetsPopcorn/datas/labeledTrainData.tsv.zip
-
-BagWordsMeetsPopcorn/description.txt
-
-BagWordsMeetsPopcorn/datas/unlabeledTrainData.tsv.zip
-
-BagWordsMeetsPopcorn/datas/unlabeledTrainData.tsv
-
-BagWordsMeetsPopcorn/datas/mongodb
-
+BagWordsMeetsPopcorn/datas/
 BagWordsMeetsPopcorn/vsm
+BagWordsMeetsPopcorn/meta_features
+BagWordsMeetsPopcorn/stacking
 
 
 AllState/Allstate Claims Severity _ Kaggle.pdf
@@ -202,3 +188,11 @@ HousePrice/Evaluation - House Prices_ Advanced Regression Techniques _ Kaggle.pd
 HousePrice/House Prices_ Advanced Regression Techniques _ Kaggle.pdf
 
 *.old
+
+BagWordsMeetsPopcorn/description.txt
+
+SpringleafMarketing/description.txt
+
+SpringleafMarketing/datas
+
+PredictRedHatValue/description.txt

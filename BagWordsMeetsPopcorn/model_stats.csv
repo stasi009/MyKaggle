@@ -1,0 +1,78 @@
+model,accuracy,auc,description
+lr1,0.853866666667,0.927096239519,LogisticRegression(C=0.01, class_weight=None, dual=False, fit_intercept=True,
+          intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
+          penalty='l2', random_state=999, solver='liblinear', tol=0.0001,
+          verbose=0, warm_start=False)
+lr2,0.868266666667,0.940257881409,LogisticRegression(C=0.10000000000000001, class_weight=None, dual=False,
+          fit_intercept=True, intercept_scaling=1, max_iter=100,
+          multi_class='ovr', n_jobs=1, penalty='l2', random_state=999,
+          solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+lr3,0.89,0.953576068956,LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+          intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
+          penalty='l2', random_state=999, solver='liblinear', tol=0.0001,
+          verbose=0, warm_start=False)
+lr4,0.8836,0.950154255439,LogisticRegression(C=10.0, class_weight=None, dual=False, fit_intercept=True,
+          intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
+          penalty='l2', random_state=999, solver='liblinear', tol=0.0001,
+          verbose=0, warm_start=False)
+lr5,0.865466666667,0.939528816777,LogisticRegression(C=100.0, class_weight=None, dual=False, fit_intercept=True,
+          intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
+          penalty='l2', random_state=999, solver='liblinear', tol=0.0001,
+          verbose=0, warm_start=False)
+linsvc1,0.866133333333,nan,LinearSVC(C=0.01, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=999, tol=0.0001,
+     verbose=0)
+linsvc2,0.891333333333,nan,LinearSVC(C=0.10000000000000001, class_weight=None, dual=True,
+     fit_intercept=True, intercept_scaling=1, loss='squared_hinge',
+     max_iter=1000, multi_class='ovr', penalty='l2', random_state=999,
+     tol=0.0001, verbose=0)
+linsvc3,0.8776,nan,LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=999, tol=0.0001,
+     verbose=0)
+linsvc4,0.85,nan,LinearSVC(C=10.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=999, tol=0.0001,
+     verbose=0)
+linsvc5,0.843066666667,nan,LinearSVC(C=100.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+     multi_class='ovr', penalty='l2', random_state=999, tol=0.0001,
+     verbose=0)
+nb,0.8548,0.930429929424,MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+rf1,0.7656,0.84696698302,RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=-1,
+            oob_score=False, random_state=999, verbose=1, warm_start=False)
+rf2,0.834933333333,0.91224374806,RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=50, n_jobs=-1,
+            oob_score=False, random_state=999, verbose=1, warm_start=False)
+rf3,0.846266666667,0.92181312588,RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=-1,
+            oob_score=False, random_state=999, verbose=1, warm_start=False)
+rf4,0.854933333333,0.929224542092,RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=500, n_jobs=-1,
+            oob_score=False, random_state=999, verbose=1, warm_start=False)
+xgb1,0.854266666667,0.930566133392,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'eta': 0.1, 'n_best_trees': 300, 'num_rounds': 300, 'subsample': 0.8, 'tag': 'xgb1', 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+xgb2,0.847066666667,0.924132825256,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'error', 'eta': 0.3, 'n_best_trees': 119, 'num_rounds': 300, 'subsample': 0.8, 'tag': 'xgb2', 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+xgb3,0.856666666667,0.932737573148,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'eta': 0.1, 'n_best_trees': 360, 'num_rounds': 360, 'min_child_weight': 2, 'subsample': 0.8, 'tag': 'xgb3', 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+xgb4,0.8604,0.935048808674,{'colsample_bytree': 0.7, 'silent': 1, 'eval_metric': 'auc', 'eta': 0.2, 'n_best_trees': 400, 'num_rounds': 400, 'min_child_weight': 5, 'subsample': 0.7, 'tag': 'xgb4', 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+xgb5,0.8528,0.932041474855,{'colsample_bytree': 0.5, 'silent': 1, 'eval_metric': 'auc', 'eta': 0.1, 'n_best_trees': 400, 'num_rounds': 400, 'min_child_weight': 10, 'subsample': 0.5, 'tag': 'xgb5', 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893866666667,0.956951829173,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'num_rounds': 300, 'subsample': 0.8, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893866666667,0.956951829173,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'num_rounds': 300, 'subsample': 0.8, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.892933333333,0.957434553104,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'num_rounds': 300, 'min_child_weight': 3, 'subsample': 0.8, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.892266666667,0.957408521432,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'auc', 'num_rounds': 300, 'min_child_weight': 5, 'subsample': 0.8, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.894,0.95668852521,{'colsample_bytree': 0.8, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 5, 'subsample': 0.8, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893333333333,0.957670829648,{'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 5, 'subsample': 0.6, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893466666667,0.957733739522,{'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 10, 'subsample': 0.6, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.892666666667,0.957822681069,{'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 20, 'subsample': 0.6, 'eta': 0.1, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893866666667,0.958175886763,{'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 30, 'subsample': 0.6, 'eta': 0.05, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.8936,0.958033708313,{'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'num_rounds': 300, 'min_child_weight': 50, 'subsample': 0.6, 'eta': 0.05, 'early_stopping_rounds': 30, 'objective': 'binary:logistic', 'max_depth': 6}
+stacking,0.893866666667,0.958175886763,{'subsample': 0.6, 'eta': 0.05, 'colsample_bytree': 0.6, 'silent': 1, 'eval_metric': 'error', 'objective': 'binary:logistic', 'num_rounds': 300, 'max_depth': 6, 'min_child_weight': 30, 'early_stopping_rounds': 30}
