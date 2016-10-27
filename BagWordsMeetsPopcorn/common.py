@@ -38,7 +38,7 @@ def predict_proba_or_label(predictor,X,index,prefix):
 class ModelStatsFile(object):
 
     def __init__(self):
-        stats_file = "meta_features/model_stats.csv"
+        stats_file = "model_stats.csv"
         stats_existed = os.path.exists(stats_file)
         self.stats_file = open(stats_file,'at')
         if not stats_existed: # first time

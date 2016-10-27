@@ -61,7 +61,7 @@ class Learner(object):
 
     def predict_validation(self,predictor,tag):
         valid_pred_result = common.predict_proba_or_label(predictor,self.Xvalid,self.yvalid.index,tag)
-        valid_pred_result.to_csv("meta_features/{}_valid.csv".format(tag), index_label='id')
+        valid_pred_result.to_csv("meta_features/{}_validate.csv".format(tag), index_label='id')
 
         colname_proba = '{}_proba'.format(tag)
         if colname_proba in valid_pred_result:

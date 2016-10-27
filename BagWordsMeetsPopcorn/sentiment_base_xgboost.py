@@ -94,7 +94,7 @@ class Learner(object):
     def run(self):
         self.train()
 
-        valid_pred_result = self.predict(valid_matrix,yvalid.index,'valid')
+        valid_pred_result = self.predict(valid_matrix,yvalid.index,'validate')
         self.evaluate(valid_pred_result)
 
         self.predict(test_matrix,ytest.index,'test')
