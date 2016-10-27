@@ -1,4 +1,5 @@
 
+import os
 import cPickle
 import numpy as np
 import pandas as pd
@@ -33,6 +34,23 @@ def predict_proba_or_label(predictor,X,index,prefix):
     except AttributeError:
         y_label = predictor.predict(X)
         return pd.DataFrame({'{}_label'.format(prefix): y_label},index=index)
+
+class ModelStatsFile(object):
+
+    def __init__(self):
+        stats_file = "meta_features/model_stats.csv"
+        stats_existed = os.path.exists(stats_file)
+        self.stats_file = open(stats_file,'at')
+        if not stats_existed: # first time
+            self.stats_file.write('model,accuracy,auc,description\n')
+
+    def log(self,tag,accuracy,auc,description):
+        performance_text = "{},{},{},{}\n".format(tag,accuracy,auc,description)
+        self.stats_file.write(performance_text)
+        print performance_text
+
+    def close(self):
+        self.stats_file.close()
 
 
 

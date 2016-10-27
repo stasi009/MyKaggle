@@ -57,12 +57,7 @@ class Learner(object):
         print "train set {}, positive ratio: {:.2f}%".format(self.Xtrain.shape, self.ytrain.mean() * 100)
         print "validation set {}, positive ratio: {:.2f}%".format(self.Xvalid.shape, self.yvalid.mean() * 100)
 
-        # ---------- prepare file to record statistics
-        stats_file = "meta_features/model_stats.csv"
-        stats_existed = os.path.exists(stats_file)
-        self.stats_file = open(stats_file,'at')
-        if not stats_existed: # first time
-            self.stats_file.write('model,accuracy,auc,description\n')
+        self.stats_file = common.ModelStatsFile()
 
     def predict_validation(self,predictor,tag):
         valid_pred_result = common.predict_proba_or_label(predictor,self.Xvalid,self.yvalid.index,tag)
@@ -79,9 +74,7 @@ class Learner(object):
             valid_accuracy = accuracy_score(self.yvalid,yvalid_pred_label)
             valid_auc = np.NaN
 
-        performance_text = "{},{},{},{}\n".format(tag,valid_accuracy,valid_auc,str(predictor))
-        self.stats_file.write(performance_text)
-        print performance_text
+        self.stats_file.log(tag,valid_accuracy,valid_auc,str(predictor))
 
     def run_once(self,predictor,tag):
         # ---------- fit on all training dataset to get the model
@@ -112,6 +105,8 @@ class Learner(object):
         self.stats_file.close()
 
 if __name__ == "__main__":
+    raise Exception("!!! ATTENTION !!!\nthe script has run once. \nrun this script again will overwrite existing result.")
+
     Cs = np.logspace(-2,2,5)
     lrs = [(LogisticRegression(C=c,random_state=seed),'lr{}'.format(index+1)) for index,c in enumerate(Cs)]
     svcs = [(LinearSVC(C=c,random_state=seed),'linsvc{}'.format(index+1)) for index,c in enumerate(Cs)]
