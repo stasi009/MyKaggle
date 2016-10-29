@@ -31,7 +31,7 @@ NegReview = 'NEGREVIEW'
 
 class WordsStream(object):
     PosWords = frozenset( pd.read_csv('datas/extend_poswords.txt',header=None).values.flatten() )
-    NegWords = frozenset( pd.read_csv('datas/extend_poswords.txt',header=None).values.flatten() )
+    NegWords = frozenset( pd.read_csv('datas/extend_negwords.txt',header=None).values.flatten() )
 
     def __init__(self,colname):
         self._colname = colname
@@ -41,9 +41,11 @@ class WordsStream(object):
         for w in words:
             if w in WordsStream.PosWords:
                 extra_words.append(PosReview)
+                # print "+++ {}: Positive".format(w)
 
             if w in WordsStream.NegWords:
                 extra_words.append(NegReview)
+                # print "--- {}: Negative".format(w)
 
         words += extra_words
 
@@ -59,6 +61,15 @@ class WordsStream(object):
                 print "{} examples loaded from mongodb[{}]".format(index + 1, self._colname)
 
         dal.close()
+
+def test_words_stream():
+    train_words_stream =  WordsStream('train').stream()
+    for index,words in enumerate( train_words_stream):
+        if index > 10:
+            return
+
+        print "*********** [{}] ***********".format(index+1)
+        print words
 
 def build_dictionary():
     train_words_stream =  WordsStream('train').stream()
@@ -114,7 +125,7 @@ class DictCleaner(object):
 
 def clean_dict_save():
     cleaner = DictCleaner()
-    clean_dict = cleaner.clean(no_below=10,keep_n=12000)
+    clean_dict = cleaner.clean(no_below=10,keep_n=30000)
 
     clean_dict.save('topic_model/codeword_dictionary.dict')
     # sort by decreasing doc-frequency
@@ -145,7 +156,7 @@ def run_lda(n_topics):
     unlabeled_bow = corpora.MmCorpus('topic_model/codeword_unlabeled.bow')
 
     # model = models.LdaMulticore(train_bow, id2word=dictionary, num_topics=n_topics,passes=3)
-    model = models.LdaModel(unlabeled_bow, id2word=dictionary, num_topics=n_topics,passes=3)
+    model = models.LdaModel(unlabeled_bow, id2word=dictionary, num_topics=n_topics,passes=2)
     print "======== LDA built on train set ========"
 
     # model.update(unlabeled_bow)
@@ -162,11 +173,12 @@ def run_lda(n_topics):
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+    # test_words_stream()
     # extend_sentiment_words_save()
     # build_dictionary()
     # clean_dict_save()
-    # build_bow_save()
-    run_lda(50)
+    # uild_bow_save()
+    run_lda(60)
 
 
 
