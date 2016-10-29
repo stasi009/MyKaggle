@@ -46,7 +46,7 @@ def build_dictionary():
 class DictCleaner(object):
     def __init__(self):
 
-        self._invalid_pattern = re.compile(r"[^a-zA-Z_]")
+        self._invalid_pattern = re.compile(r"[^a-zA-Z_\-]")
 
         self._extra_stop_words = set()
         # for a dataset containing movie reviews, 'movie' and 'film' are too frequent
