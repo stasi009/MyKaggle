@@ -1,0 +1,50 @@
+Actually, I prepare this dataset for students on my Deep Learning and NLP course.
+
+But I am also very happy to see kagglers play around with it.
+
+Have fun!
+
+Description:
+
+There are two channels of data provided in this dataset:
+
+News data: I crawled historical news headlines from Reddit WorldNews Channel (/r/worldnews). They are ranked by reddit users' votes, and only the top 25 headlines are considered for a single date. (Range: 2008-06-08 to 2016-07-01)
+Stock data: Dow Jones Industrial Average (DJIA) is used to "prove the concept". (Range: 2008-08-08 to 2016-07-01)
+I provided three data files in .csv format:
+
+RedditNews.csv: two columns The first column is the "date", and second column is the "news headlines". All news are ranked from top to bottom based on how hot they are. Hence, there are 25 lines for each date.
+DJIA_table.csv: Downloaded directly from Yahoo Finance: check out the web page for more info.
+Combined_News_DJIA.csv: To make things easier for my students, I provide this combined dataset with 27 columns. The first column is "Date", the second is "Label", and the following ones are news headlines ranging from "Top1" to "Top25".
+=========================================
+
+To my students:
+
+I made this a binary classification task. Hence, there are only two labels:
+
+"1" when DJIA Adj Close value rised or stayed as the same;
+
+"0" when DJIA Adj Close value decreased.
+
+For task evaluation, please use data from 2008-08-08 to 2014-12-31 as Training Set, and Test Set is then the following two years data (from 2015-01-02 to 2016-07-01). This is roughly a 80%/20% split.
+
+And, of course, use AUC as the evaluation metric.
+
+=========================================
+
++++++++++++++++++++++++++++++++++++++++++
+
+To all kagglers:
+
+Please upvote this dataset if you like this idea for market prediction.
+
+If you think you coded an amazing trading algorithm,
+
+friendly advice
+
+do play safe with your own money :)
+
++++++++++++++++++++++++++++++++++++++++++
+
+Feel free to contact me if there is any question~
+
+And, remember me when you become a millionaire :P
