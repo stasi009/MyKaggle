@@ -1,7 +1,9 @@
 
-import numpy as np
-import pandas as pd
+from gensim import corpora,models,matutils
 
-news_djia = pd.read_csv("datas/Combined_News_DJIA.csv")
+def test_dictionary():
+    dictionary = corpora.Dictionary.load('headlines.dict')
+    print "originally, there are {} tokens".format(len(dictionary))
 
-
+if __name__ == "__main__":
+    pass
